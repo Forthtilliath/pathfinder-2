@@ -1,0 +1,27 @@
+---
+import ActionGlyph from "./ActionGlyph.astro";
+import type { ActionCost } from "../lib/types";
+
+interface Props {
+  name: string;
+  type: string;
+  cost?: ActionCost;
+  unreviewed?: boolean;
+}
+const { name, type, cost, unreviewed } = Astro.props;
+---
+
+<header class="entry-header">
+  <h1>
+    {name}
+    {cost && <ActionGlyph cost={cost} />}
+  </h1>
+  <p class="entry-type">{type}</p>
+  {
+    unreviewed && (
+      <p class="review-badge">
+        <a href="/sources/#traductions-du-site">Traduction automatique, non relue</a>
+      </p>
+    )
+  }
+</header>

@@ -1,0 +1,10 @@
+---
+import { actionGlyphHtml } from "../lib/action-glyph";
+import type { ActionCost } from "../lib/types";
+
+interface Props {
+  cost: ActionCost;
+}
+---
+
+<Fragment set:html={actionGlyphHtml(Astro.props.cost)} />

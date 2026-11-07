@@ -1,0 +1,94 @@
+---
+import "../styles/fonts.css";
+import "../styles/global.css";
+import "../styles/entry-lists.css";
+import "../styles/class-stats.css";
+// Preloaded so the first paint of every page already uses the right fonts (no reflow on swap).
+import serif400 from "@fontsource/alegreya/files/alegreya-latin-400-normal.woff2?url";
+import serif700 from "@fontsource/alegreya/files/alegreya-latin-700-normal.woff2?url";
+import sans400 from "@fontsource/alegreya-sans/files/alegreya-sans-latin-400-normal.woff2?url";
+import sans500 from "@fontsource/alegreya-sans/files/alegreya-sans-latin-500-normal.woff2?url";
+import { COLLECTIONS } from "../lib/collections";
+import type { CollectionName } from "../lib/types";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Active navigation section. */
+  section?: CollectionName;
+}
+
+const { title, description = "Les règles de Pathfinder 2 remasterisé, en français.", section } = Astro.props;
+const nav = COLLECTIONS.filter((c) => c.nav).map((c) => ({ href: `/${c.path}/`, label: c.title, key: c.name }));
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title ? `${title} · PF2 en français` : "PF2 en français"}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {[serif400, serif700, sans400, sans500].map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Aller au contenu</a>
+    <header class="site-header">
+      <a class="brand" href="/">PF2 <span>en français</span></a>
+      <nav aria-label="Sections">
+        {
+          nav.map((n) => (
+            <a href={n.href} aria-current={section === n.key ? "page" : undefined}>
+              {n.label}
+            </a>
+          ))
+        }
+      </nav>
+      <script is:inline>
+        // Runs before the first paint: on narrow screens the scrollable menu keeps the current section in view instead of jumping back to the start.
+        (() => {
+          const nav = document.currentScript.previousElementSibling;
+          const current = nav.querySelector('[aria-current="page"]');
+          if (current && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = current.offsetLeft - nav.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2;
+        })();
+      </script>
+      <button type="button" class="search-button" data-open-search aria-keyshortcuts="Control+K">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"
+          ><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.6"></circle><path
+            d="M11 11l3.5 3.5"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"></path></svg
+        >
+        <span>Rechercher</span>
+        <kbd>Ctrl K</kbd>
+      </button>
+    </header>
+
+    <main id="content">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Site non officiel. Pathfinder est une marque de Paizo Inc., traduite en français par Black Book Éditions.{" "}
+        <a href="/sources/">Sources et remerciements</a>
+      </p>
+    </footer>
+
+    <dialog class="search-dialog" aria-label="Recherche">
+      <form method="dialog" class="search-close"><button aria-label="Fermer la recherche">Échap</button></form>
+      <div id="search-root"></div>
+      <p class="search-unavailable" hidden>La recherche est disponible une fois le site construit (npm run build), pas en mode développement.</p>
+    </dialog>
+
+    <div class="preview" role="tooltip" hidden></div>
+
+    <script>
+      import "../client/search";
+      import "../client/previews";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+---
+import type { ProgressionLevel } from "../lib/types";
+
+interface Props {
+  progression: ProgressionLevel[];
+}
+const { progression } = Astro.props;
+---
+
+<section class="progression" aria-labelledby="progression-title">
+  <h2 id="progression-title">Progression</h2>
+  <table>
+    <thead>
+      <tr><th scope="col">Niveau</th><th scope="col">Aptitudes</th></tr>
+    </thead>
+    <tbody>
+      {
+        progression.map((row) => (
+          <tr>
+            <th scope="row">{row.level}</th>
+            <td>
+              <ul>
+                {row.items.map((item) => (
+                  <li data-feature={item.preview ? "" : undefined}>
+                    {item.href ? (
+                      <a href={item.href} data-preview={item.preview}>
+                        {item.label}
+                      </a>
+                    ) : (
+                      item.label
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,44 @@
+---
+import { classStats } from "../lib/class-stats";
+import type { Fact } from "../lib/types";
+
+interface Props {
+  facts: Fact[];
+}
+const stats = classStats(Astro.props.facts);
+---
+
+<div class="class-stats">
+  <dl class="key-figures">
+    {
+      stats.keyFigures.map((k) => (
+        <div>
+          <dt>{k.label}</dt>
+          <dd>
+            {k.rank ? <span class="rank" data-rank={k.rank}>{k.value}</span> : <span class="figure">{k.value}</span>}
+            {k.note && <span class="figure-note">{k.note}</span>}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+  <dl class="proficiencies">
+    {
+      stats.lists.map((l) => (
+        <div>
+          <dt>{l.label}</dt>
+          <dd>
+            <ul>
+              {l.items.map((item) => (
+                <li>
+                  <span set:html={item.html} />
+                  {item.rank && <span class="rank" data-rank={item.rank}>{item.rank}</span>}
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+</div>

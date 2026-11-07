@@ -1,0 +1,27 @@
+---
+import { findEntry } from "../lib/data";
+import type { Rarity } from "../lib/types";
+
+interface Props {
+  traits: string[];
+  rarity?: Rarity;
+}
+const { traits, rarity } = Astro.props;
+const items = traits.map((id) => findEntry("traits", id)).filter((t) => t !== undefined);
+const RARITY_LABELS: Record<string, string> = { uncommon: "Peu courant", rare: "Rare", unique: "Unique" };
+---
+
+{
+  (items.length > 0 || (rarity && rarity !== "common")) && (
+    <ul class="trait-list" aria-label="Traits">
+      {rarity && rarity !== "common" && <li class="trait" data-rarity={rarity}>{RARITY_LABELS[rarity]}</li>}
+      {items.map((t) => (
+        <li class="trait">
+          <a href={`/traits/${t.id}/`} data-preview={`traits/${t.id}`}>
+            {t.name.value}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}

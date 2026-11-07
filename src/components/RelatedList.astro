@@ -1,0 +1,71 @@
+---
+import ActionGlyph from "./ActionGlyph.astro";
+import { collectionTitle, entryPath, entryUrl, findEntry } from "../lib/data";
+import { slugify } from "../lib/normalize";
+import type { Entry, Related } from "../lib/types";
+
+interface Props {
+  related: Related[];
+}
+
+/** Lists longer than this, whose entries all have a level, are shown by level. */
+const BY_LEVEL_MIN = 8;
+
+const groups = Astro.props.related
+  .map((r) => {
+    const title = r.title || collectionTitle(r.collection);
+    const items = r.ids.map((id) => findEntry(r.collection, id)).filter((e): e is Entry => e !== undefined);
+    const byLevel = items.length >= BY_LEVEL_MIN && items.every((e) => e.level !== undefined);
+    const levels = new Map<number, Entry[]>();
+    if (byLevel)
+      for (const e of items) {
+        const list = levels.get(e.level!);
+        if (list) list.push(e);
+        else levels.set(e.level!, [e]);
+      }
+    return { title, id: slugify(title), items, levels: byLevel ? [...levels].sort(([a], [b]) => a - b) : null };
+  })
+  .filter((g) => g.items.length);
+---
+
+{
+  groups.map((g) => (
+    <section class="related" id={g.id}>
+      <h2>
+        {g.title} <span class="count">{g.items.length}</span>
+      </h2>
+      {g.levels ? (
+        <dl class="by-level">
+          {g.levels.map(([level, list]) => (
+            <div>
+              <dt>Niveau {level}</dt>
+              <dd>
+                <ul>
+                  {list.map((e) => (
+                    <li>
+                      <a href={entryUrl(e)} data-preview={entryPath(e.collection, e.id)}>
+                        {e.name.value}
+                      </a>
+                      {e.actionCost && <ActionGlyph cost={e.actionCost} />}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <ul class="related-list">
+          {g.items.map((e) => (
+            <li>
+              <a href={entryUrl(e)} data-preview={entryPath(e.collection, e.id)}>
+                {e.name.value}
+              </a>
+              {e.actionCost && <ActionGlyph cost={e.actionCost} />} <span class="subtitle">{e.subtitle}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  ))
+}

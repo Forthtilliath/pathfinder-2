@@ -1,0 +1,42 @@
+---
+import { describeProvenance, groupByProvenance, meta } from "../lib/data";
+import type { Book, Text } from "../lib/types";
+
+interface Props {
+  /** [French field label, text] pairs. */
+  fields: [string, Text | undefined][];
+  book?: Book;
+}
+const { fields, book } = Astro.props;
+const groups = groupByProvenance(fields);
+const foundry = meta.sources.find((s) => s.id === "foundry-pf2e");
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+---
+
+<aside class="source-notes" aria-labelledby="source-notes-title">
+  <h2 id="source-notes-title">Sources</h2>
+  <ul>
+    {
+      groups.map((g) => (
+        <li>
+          <span class="source-fields">{capitalize(g.labels.join(", "))}</span> : {describeProvenance(g.provenance)}.
+        </li>
+      ))
+    }
+    {
+      foundry && (
+        <li>
+          <span class="source-fields">Données de règles</span> : <a href={foundry.url}>{foundry.name}</a> (version {foundry.version}, révision{" "}
+          <code>{foundry.commit.slice(0, 8)}</code>).
+        </li>
+      )
+    }
+    {
+      book && (
+        <li>
+          <span class="source-fields">Ouvrage d'origine</span> : {book.name.value}, licence {book.license}.
+        </li>
+      )
+    }
+  </ul>
+</aside>
