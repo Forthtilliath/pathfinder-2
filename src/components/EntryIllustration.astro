@@ -1,0 +1,26 @@
+---
+import { Image } from "astro:assets";
+import { entryIllustration } from "../lib/illustrations";
+
+interface Props {
+  collection: string;
+  id: string;
+  name: string;
+}
+const { collection, id, name } = Astro.props;
+const src = entryIllustration({ collection, id });
+---
+
+{
+  src && (
+    <figure class="entry-illustration" data-pagefind-ignore>
+      <Image
+        src={src}
+        alt={`Illustration : ${name}`}
+        widths={[320, 480, 640]}
+        sizes="(min-width: 48rem) 18rem, 16rem"
+        loading="eager"
+      />
+    </figure>
+  )
+}
