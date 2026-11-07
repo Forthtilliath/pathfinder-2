@@ -95,7 +95,16 @@ Le code (fichiers, fonctions, propriétés) est en anglais ; les chemins d'URL e
 
 ## Sécurité
 
-Le HTML des pages vient de sources tierces (pathfinder-fr, Archives of Nethys, Foundry, traduction automatique) et il est rendu avec `set:html`. L'import le filtre donc par liste blanche (`scripts/import/sanitize.ts`) : aucun script, gestionnaire d'événement, style ni lien `javascript:` ne peut atteindre le site. Toute nouvelle sortie HTML doit passer par `toHtml()` dans `index.ts`.
+Le HTML des pages vient de sources tierces (pathfinder-fr, Archives of Nethys, Foundry, traduction automatique) et il est rendu avec `set:html`. L'import le filtre donc par liste blanche (`scripts/import/sanitize.ts`) : aucun script, gestionnaire d'événement, style ni lien `javascript:` ne peut atteindre le site. Toute nouvelle sortie HTML doit passer par `toHtml()` dans `index.ts`. Seul l'attribut `data-preview` est conservé, et seulement au format `section/identifiant`.
+
+Content Security Policy en deux parties :
+
+- `security.csp` dans `astro.config.mjs` : une balise `<meta>` sur chaque page, avec les hashes des scripts et styles inline émis par Astro (pas de `'unsafe-inline'`). `'wasm-unsafe-eval'` est nécessaire à Pagefind. Les tests e2e tournent avec cette CSP : toute violation fait échouer un test.
+- `vercel.json` : ce qu'une balise `<meta>` ne peut pas porter (`frame-ancestors`), plus `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` et le cache longue durée des fichiers hachés de Pagefind.
+
+Toute ressource tierce (CDN, mesure d'audience) devra être ajoutée à ces directives.
+
+Au niveau HTTP, `_headers` (convention Netlify, dans `public/` donc publié à la racine du site) fixe une CSP restrictive — le site est 100 % autonome, aucune ressource tierce — ainsi que `Referrer-Policy`, `X-Content-Type-Options` et `Permissions-Policy`. Les scripts clients sont des fichiers externes (`script-src 'self'`) ; seuls les scripts inline émis par Astro (runtime d'hydratation Preact) sont autorisés, par leur hash SHA-256. Le fichier est régénéré à chaque build par `scripts/csp-headers.mjs` : ne pas le modifier à la main. Sur Cloudflare Pages, recopier la CSP dans une Page Rule. Voir `CONTRIBUTING.md`.
 
 ## À noter
 
