@@ -5,7 +5,10 @@ export const test = base.extend<{ pageErrors: string[] }>({
   pageErrors: [
     async ({ page, baseURL }, use) => {
       const errors: string[] = [];
-      page.on("pageerror", (e) => errors.push(e.message));
+      page.on("pageerror", (e) => {
+        // Chrome rejects the page cross-fade (view transition) when it cannot run, e.g. a headless tab not shown under parallel load: browser-side, not a site error.
+        if (!e.message.startsWith("Transition was aborted")) errors.push(e.message);
+      });
       page.on("console", (m) => {
         // Failed requests are reported by the response handler below, with their URL.
         if (m.type() === "error" && !m.text().startsWith("Failed to load resource")) errors.push(m.text());
