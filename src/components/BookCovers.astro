@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import { bookCount, CORE_BOOKS } from "../lib/books";
+
+interface Props {
+  /** Show the cover credits and store links (sources page). */
+  detailed?: boolean;
+}
+const { detailed = false } = Astro.props;
+const formatCount = (n: number) => n.toLocaleString("fr-FR");
+---
+
+<ul class:list={["book-covers", { detailed }]}>
+  {
+    CORE_BOOKS.map((b) => (
+      <li>
+        <figure>
+          {/* Paizo covers must stay unmodified: resized only, never cropped (object-fit: contain). */}
+          <Image src={b.cover} alt={`Couverture de ${b.english}`} widths={[160, 320]} sizes="10rem" loading="lazy" />
+          <figcaption>
+            <strong>{b.name}</strong>
+            <span>
+              <i lang="en">{b.english}</i> · {formatCount(bookCount(b.name))} fiches
+            </span>
+            {detailed && (
+              <span>
+                {b.artist ? <>Couverture : {b.artist}. </> : null}
+                <a href={b.store}>Boutique Paizo</a>
+              </span>
+            )}
+          </figcaption>
+        </figure>
+      </li>
+    ))
+  }
+</ul>
