@@ -31,6 +31,18 @@ test.describe("entry page", () => {
     await expect(toc).toBeInViewport();
   });
 
+  test("table of contents highlights the section being read", async ({ page }) => {
+    await page.goto("/classes/franc-tireur/");
+    const toc = page.getByRole("navigation", { name: "Sommaire" });
+    const progression = toc.getByRole("link", { name: "Progression" });
+    await expect(progression).not.toHaveAttribute("aria-current");
+    await progression.click();
+    await expect(progression).toHaveAttribute("aria-current", "true");
+    await expect(toc.locator("[aria-current]")).toHaveCount(1);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(progression).not.toHaveAttribute("aria-current");
+  });
+
   test("table of contents is collapsed above the content on mobile", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/classes/franc-tireur/");
