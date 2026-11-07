@@ -6,8 +6,9 @@ import EntryHeader from "../../components/EntryHeader.astro";
 import RelatedList from "../../components/RelatedList.astro";
 import SourceNotes from "../../components/SourceNotes.astro";
 import TraitList from "../../components/TraitList.astro";
-import { COLLECTIONS } from "../../lib/collections";
+import { COLLECTIONS, COLLECTION_BY_NAME } from "../../lib/collections";
 import { entries, entryTexts, hasUnreviewedTranslation, plainText } from "../../lib/data";
+import { addHeadingIds } from "../../lib/toc";
 import type { Entry } from "../../lib/types";
 
 export function getStaticPaths() {
@@ -17,40 +18,75 @@ export function getStaticPaths() {
 const { entry } = Astro.props as { entry: Entry };
 const texts = entryTexts(entry);
 const description = plainText(entry.description.value).slice(0, 160) || `${entry.subtitle} — ${entry.name.value}`;
+const collection = COLLECTION_BY_NAME[entry.collection];
+
+// Anchors for the table of contents, computed server-side so the rendered
+// headings carry ids (deep links and SEO, no client-side re-layout).
+// One shared map: two chapters with the same heading still get distinct ids.
+const usedIds = new Map<string, number>();
+const { html: descriptionHtml, headings: descriptionHeadings } = addHeadingIds(entry.description.value ?? "", usedIds);
+const chapters = (entry.chapters ?? []).map((c) => addHeadingIds(c.value, usedIds));
+const toc = [...descriptionHeadings, ...chapters.flatMap((c) => c.headings)];
+const hasToc = toc.length >= 3;
 ---
 
 <BaseLayout title={entry.name.value} section={entry.collection} description={description}>
-  <article class="entry" data-pagefind-body>
-    <EntryHeader name={entry.name.value} type={entry.subtitle} cost={entry.actionCost} unreviewed={hasUnreviewedTranslation(texts.map(([, t]) => t))} />
-    <TraitList traits={entry.traits} rarity={entry.rarity} />
-    {entry.collection === "classes" && entry.facts.length > 0 && <ClassStats facts={entry.facts} />}
-    {
-      entry.collection !== "classes" && entry.facts.length > 0 && (
-        <dl class="properties">
-          {entry.facts.map((f) => (
-            <div>
-              <dt>{f.label}</dt>
-              <dd set:html={f.value.value} />
-            </div>
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+    <a href="/">Accueil</a>
+    <span aria-hidden="true">›</span>
+    <a href={`/${collection.path}/`}>{collection.title}</a>
+    <span aria-hidden="true">›</span>
+    <span aria-current="page">{entry.name.value}</span>
+  </nav>
+  <div class="entry-layout">
+    <article class="entry" data-pagefind-body>
+      <EntryHeader name={entry.name.value} type={entry.subtitle} cost={entry.actionCost} unreviewed={hasUnreviewedTranslation(texts.map(([, t]) => t))} />
+      <button type="button" class="copy-link" data-pagefind-ignore>Copier le lien</button>
+      <TraitList traits={entry.traits} rarity={entry.rarity} />
+      {entry.collection === "classes" && entry.facts.length > 0 && <ClassStats facts={entry.facts} />}
+      {
+        entry.collection !== "classes" && entry.facts.length > 0 && (
+          <dl class="properties">
+            {entry.facts.map((f) => (
+              <div>
+                <dt>{f.label}</dt>
+                <dd set:html={f.value.value} />
+              </div>
+            ))}
+          </dl>
+        )
+      }
+      {
+        entry.sections && (
+          <div class="stat-sections">
+            {entry.sections.map((f) => (
+              <div class="stat-section">
+                <strong>{f.label}</strong> <span set:html={f.value.value} />
+              </div>
+            ))}
+          </div>
+        )
+      }
+      {descriptionHtml && <div class="rule-text" set:html={descriptionHtml} />}
+      {chapters.map((c) => <div class="rule-text chapter" set:html={c.html} />)}
+    </article>
+    {hasToc && (
+      <nav class="toc" aria-label="Sommaire">
+        <p class="toc-title">Sommaire</p>
+        <ol>
+          {toc.map((h) => (
+            <li class={`toc-level-${h.level}`}>
+              <a href={`#${h.id}`}>{h.text}</a>
+            </li>
           ))}
-        </dl>
-      )
-    }
-    {
-      entry.sections && (
-        <div class="stat-sections">
-          {entry.sections.map((f) => (
-            <div class="stat-section">
-              <strong>{f.label}</strong> <span set:html={f.value.value} />
-            </div>
-          ))}
-        </div>
-      )
-    }
-    {entry.description.value && <div class="rule-text" set:html={entry.description.value} />}
-    {entry.chapters?.map((c) => <div class="rule-text chapter" set:html={c.value} />)}
-  </article>
+        </ol>
+      </nav>
+    )}
+  </div>
   {entry.progression && <ClassProgression progression={entry.progression} />}
   <RelatedList related={entry.related} />
   <SourceNotes fields={texts} book={entry.book} />
+  <script>
+    import "../../client/copy-link";
+  </script>
 </BaseLayout>

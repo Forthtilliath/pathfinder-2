@@ -1,0 +1,115 @@
+/* Entry page navigation: breadcrumbs, table of contents, "copy link" button. */
+
+/* Breadcrumbs (entry pages) */
+
+.breadcrumbs {
+  max-width: 44rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: -1rem 0 0.75rem;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.breadcrumbs a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs [aria-current] {
+  color: var(--ink);
+}
+
+/* Entry + table of contents */
+
+.entry-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 2rem;
+  align-items: start;
+}
+
+.toc {
+  margin-top: 2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: var(--step--1);
+}
+
+@media (min-width: 60rem) {
+  .entry-layout {
+    grid-template-columns: minmax(0, 44rem) minmax(10rem, 12rem);
+  }
+
+  .toc {
+    position: sticky;
+    top: 3rem;
+    margin: 0;
+    padding: 0 0 0 1rem;
+    border: 0;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+.toc-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc li {
+  padding-block: 0.15rem;
+}
+
+.toc-level-3 {
+  padding-left: 1rem;
+}
+
+.toc a {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.toc a:hover,
+.toc a:focus-visible {
+  color: var(--link);
+}
+
+/* "Copy link" button */
+
+.copy-link {
+  margin: 0.25rem 0 0.25rem;
+  padding: 0.15rem 0.6rem;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--link);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.copy-link:hover {
+  border-color: var(--link);
+}
+
+.copy-link.copied {
+  color: var(--uncommon);
+  border-color: var(--uncommon);
+}
