@@ -35,9 +35,12 @@ function position(link: HTMLElement) {
   if (below + height > window.innerHeight - 8) bubble.style.top = `${Math.max(8, rect.top - height - 8)}px`;
 }
 
+/** Same check as the import sanitizer: only "section/id" paths are fetched. */
+const PREVIEW_PATH = /^[a-z0-9]+(-[a-z0-9]+)*\/[a-z0-9]+(-[a-z0-9]+)*$/;
+
 async function show(link: HTMLAnchorElement) {
   const path = link.dataset.preview;
-  if (!path) return;
+  if (!path || !PREVIEW_PATH.test(path)) return;
   activeLink = link;
   const data = await fetchPreview(path);
   if (!data || activeLink !== link) return;
