@@ -1,31 +1,14 @@
 ---
 import ActionGlyph from "./ActionGlyph.astro";
-import { collectionTitle, entryPath, entryUrl, findEntry } from "../lib/data";
-import { slugify } from "../lib/normalize";
-import type { Entry, Related } from "../lib/types";
+import { entryPath, entryUrl } from "../lib/data";
+import type { RelatedGroup } from "../lib/related";
 
 interface Props {
-  related: Related[];
+  /** From relatedGroups(): the page also lists them in its table of contents. */
+  groups: RelatedGroup[];
 }
 
-/** Lists longer than this, whose entries all have a level, are shown by level. */
-const BY_LEVEL_MIN = 8;
-
-const groups = Astro.props.related
-  .map((r) => {
-    const title = r.title || collectionTitle(r.collection);
-    const items = r.ids.map((id) => findEntry(r.collection, id)).filter((e): e is Entry => e !== undefined);
-    const byLevel = items.length >= BY_LEVEL_MIN && items.every((e) => e.level !== undefined);
-    const levels = new Map<number, Entry[]>();
-    if (byLevel)
-      for (const e of items) {
-        const list = levels.get(e.level!);
-        if (list) list.push(e);
-        else levels.set(e.level!, [e]);
-      }
-    return { title, id: slugify(title), items, levels: byLevel ? [...levels].sort(([a], [b]) => a - b) : null };
-  })
-  .filter((g) => g.items.length);
+const { groups } = Astro.props;
 ---
 
 {
