@@ -1,13 +1,13 @@
 import { expect, test } from "./fixtures";
 
 test.describe("navigation", () => {
-  test("home lists the sections and the conditions", async ({ page }) => {
+  test("home lists the sections", async ({ page }) => {
     await page.goto("/");
     await expect(page).toHaveTitle("PF2 en français");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Pathfinder 2");
     const sections = page.getByRole("region", { name: "Parcourir" }).getByRole("link");
     expect(await sections.count()).toBeGreaterThan(10);
-    await expect(page.getByRole("region", { name: "États" }).getByRole("link", { name: "Effrayé" })).toBeVisible();
+    await expect(sections.filter({ hasText: "États" })).toHaveAttribute("href", "/etats/");
   });
 
   test("main navigation leads to a list and marks it as current", async ({ page }) => {
