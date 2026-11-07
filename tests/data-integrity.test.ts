@@ -27,7 +27,8 @@ function strings(value: unknown, out: string[] = []): string[] {
   return out;
 }
 
-const DANGEROUS = /<\s*(script|iframe|object|embed|style|img|svg|form|input|link|meta|base)\b|\son[a-z]+\s*=|javascript:|\sstyle\s*=|srcdoc/i;
+const DANGEROUS =
+  /<\s*(script|iframe|object|embed|style|img|svg|form|input|link|meta|base)\b|\son[a-z]+\s*=|javascript:|\sstyle\s*=|srcdoc|\sdata-(?!preview=)[a-z-]+\s*=/i;
 
 describe("imported data", () => {
   it("is present", () => {
