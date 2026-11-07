@@ -24,6 +24,13 @@ for (const scheme of ["light", "dark"] as const) {
       });
     }
 
+    test("mega menu has no accessibility violation", async ({ page }) => {
+      await page.goto("/sorts/");
+      await page.getByRole("button", { name: "Parcourir" }).click();
+      await expect(page.locator("#site-menu")).toBeVisible();
+      expect(await violations(page, "#site-menu")).toEqual([]);
+    });
+
     test("search dialog has no accessibility violation", async ({ page }) => {
       await page.goto("/");
       await page.keyboard.press("Control+k");

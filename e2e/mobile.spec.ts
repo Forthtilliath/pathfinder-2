@@ -24,7 +24,22 @@ test("facets open from the Filtres button", async ({ page }) => {
   await expect(page.getByRole("group", { name: "Rang" })).toBeVisible();
 });
 
-test("current section stays visible in the scrollable menu", async ({ page }) => {
+test("menu opens below the header, fits the screen and closes", async ({ page }) => {
   await page.goto("/regles/");
-  await expect(page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name: "Règles" })).toBeInViewport();
+  await page.getByRole("button", { name: "Parcourir" }).click();
+  const menu = page.locator("#site-menu");
+  await expect(menu).toBeVisible();
+  const header = await page.locator(".site-header").boundingBox();
+  const box = await menu.boundingBox();
+  expect(box!.y).toBeGreaterThanOrEqual(header!.y + header!.height - 1);
+  expect(box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+  expect(await noHorizontalScroll(page)).toBe(true);
+  await expect(menu.getByRole("link", { name: /^Règles/ })).toHaveAttribute("aria-current", "page");
+  await menu.getByRole("button", { name: "Fermer le menu" }).click();
+  await expect(menu).toBeHidden();
+});
+
+test("search button keeps its name when only the icon shows", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Rechercher" })).toBeVisible();
 });

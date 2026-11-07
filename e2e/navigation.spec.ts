@@ -18,6 +18,26 @@ test.describe("navigation", () => {
     await expect(page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name: "Sorts" })).toHaveAttribute("aria-current", "page");
   });
 
+  test("mega menu lists every group and closes on Escape", async ({ page }) => {
+    await page.goto("/sorts/boule-de-feu/");
+    const nav = page.getByRole("navigation", { name: "Sections" });
+    const toggle = nav.getByRole("button", { name: "Parcourir" });
+    const menu = page.locator("#site-menu");
+    await expect(menu).toBeHidden();
+    await toggle.click();
+    await expect(menu).toBeVisible();
+    await expect(menu.getByRole("list", { name: "MJ et monstres" }).getByRole("link", { name: /Créatures/ })).toBeVisible();
+    // An entry page marks the list it belongs to.
+    await expect(menu.getByRole("link", { name: /^Sorts/ })).toHaveAttribute("aria-current", "true");
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeHidden();
+    await toggle.click();
+    await menu.getByRole("link", { name: /^Dons de classe/ }).click();
+    await expect(page).toHaveURL(/\/dons-de-classe\/$/);
+    await toggle.click();
+    await expect(menu.getByRole("link", { name: /^Dons de classe/ })).toHaveAttribute("aria-current", "page");
+  });
+
   test("entry page shows the rule text", async ({ page }) => {
     await page.goto("/sorts/boule-de-feu/");
     await expect(page).toHaveTitle("Boule de feu · PF2 en français");
