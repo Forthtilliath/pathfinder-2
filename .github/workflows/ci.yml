@@ -40,6 +40,9 @@ jobs:
       - name: Audit des dépendances
         run: npm audit --audit-level=high
 
+      - name: Lint (ESLint)
+        run: npm run lint
+
       - name: Types (astro check)
         run: npm run check
 
