@@ -1,0 +1,57 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FilterableList, { type FacetOptions } from "../../components/FilterableList";
+import { COLLECTION_BY_NAME, COLLECTIONS, VIEWS, type FacetDef } from "../../lib/collections";
+import { listItem, listRows } from "../../lib/data";
+import type { CollectionName } from "../../lib/types";
+
+interface Page {
+  path: string;
+  title: string;
+  noun: string;
+  intro: string;
+  base: CollectionName;
+  facets: FacetDef[];
+  filter?: { key: string; value: string };
+}
+
+export function getStaticPaths() {
+  const pages: Page[] = [
+    ...COLLECTIONS.map((c) => ({ path: c.path, title: c.title, noun: c.noun, intro: c.intro, base: c.name, facets: c.facets })),
+    ...VIEWS.map((v) => ({ ...v, facets: COLLECTION_BY_NAME[v.base].facets.filter((f) => f.key !== v.filter.key) })),
+  ];
+  return pages.map((page) => ({ params: { section: page.path }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: Page };
+const rows = listRows(page.base, page.filter);
+const INITIAL = 120;
+// Short lists ship whole; long ones ship their first rows (display fields only) and load the rest as JSON.
+const complete = rows.length <= INITIAL;
+
+// Facet options are computed here from every row, so the client only needs the rows.
+const facets: FacetOptions[] = page.facets.map((f) => {
+  const values = [...new Set(rows.flatMap((r) => r.filters[f.key] ?? []))];
+  values.sort(
+    f.order ? (a, b) => f.order!.indexOf(a) - f.order!.indexOf(b) : f.numeric ? (a, b) => Number(a) - Number(b) : (a, b) => a.localeCompare(b, "fr"),
+  );
+  return { key: f.key, label: f.label, options: values };
+});
+---
+
+<BaseLayout title={page.title} section={page.base} description={page.intro}>
+  <div class="list-page">
+    <h1>{page.title}</h1>
+    <p class="list-intro">{page.intro}</p>
+    <FilterableList
+      client:load
+      allRows={complete ? rows : undefined}
+      initialItems={complete ? [] : rows.slice(0, INITIAL).map(listItem)}
+      total={rows.length}
+      dataUrl={`/listes/${page.path}.json`}
+      basePath={COLLECTION_BY_NAME[page.base].path}
+      facets={facets}
+      noun={page.noun}
+    />
+  </div>
+</BaseLayout>

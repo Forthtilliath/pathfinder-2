@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { COLLECTIONS, VIEWS } from "../lib/collections";
+import { entries, entryPath, entryUrl, meta } from "../lib/data";
+
+const sections = [
+  ...COLLECTIONS.map((c) => ({ path: c.path, title: c.title, intro: c.intro, count: entries(c.name).length })),
+  ...VIEWS.map((v) => ({ path: v.path, title: v.title, intro: v.intro, count: entries(v.base).filter((e) => e.filters[v.filter.key]?.includes(v.filter.value)).length })),
+].filter((c) => c.count > 0);
+const conditions = entries("conditions");
+const formatCount = (n: number) => n.toLocaleString("fr-FR");
+---
+
+<BaseLayout title="">
+  <section class="home-hero">
+    <h1>Les règles de Pathfinder 2 remasterisé, en français.</h1>
+    <button type="button" class="search-field" data-open-search>
+      <span>Un sort, un don, une classe…</span>
+      <kbd>Ctrl K</kbd>
+    </button>
+  </section>
+
+  <section class="home-sections" aria-label="Parcourir">
+    {
+      sections.map((s) => (
+        <a class="home-section" href={`/${s.path}/`}>
+          <h2>
+            {s.title} <span class="count">{formatCount(s.count)}</span>
+          </h2>
+          <p>{s.intro}</p>
+        </a>
+      ))
+    }
+  </section>
+
+  <section class="condition-shortcuts" aria-labelledby="condition-shortcuts-title">
+    <h2 id="condition-shortcuts-title">États</h2>
+    <ul>
+      {
+        conditions.map((c) => (
+          <li>
+            <a href={entryUrl(c)} data-preview={entryPath(c.collection, c.id)}>
+              {c.name.value}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <p class="updated-at">Données mises à jour le {new Date(meta.date).toLocaleDateString("fr-FR", { dateStyle: "long" })}.</p>
+</BaseLayout>

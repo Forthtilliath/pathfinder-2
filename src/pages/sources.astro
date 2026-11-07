@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { meta } from "../lib/data";
+
+const formatCount = (n: number) => n.toLocaleString("fr-FR");
+const total = Object.values(meta.bySource).reduce((a, b) => a + b, 0);
+const SOURCE_NAMES: Record<string, string> = {
+  bbe: "Traduction officielle (Black Book Éditions)",
+  "pathfinder-fr": "Traduction de la communauté Pathfinder-fr",
+  site: "Traduction du site",
+};
+---
+
+<BaseLayout title="Sources et remerciements" description="D'où viennent les textes et les données de ce site.">
+  <article class="text-page">
+    <h1>Sources et remerciements</h1>
+    <p>
+      Ce site rassemble les règles de Pathfinder 2 remasterisé en français. Il n'existe que grâce au travail de plusieurs projets, que
+      nous remercions chaleureusement.
+    </p>
+
+    <h2>Merci à</h2>
+    <dl class="credits">
+      <div>
+        <dt><a href="https://paizo.com/">Paizo</a></dt>
+        <dd>Pour Pathfinder 2 et sa publication sous licence ORC, qui permet de reprendre les règles. Pathfinder est une marque de Paizo Inc.</dd>
+      </div>
+      <div>
+        <dt><a href="https://www.black-book-editions.fr/">Black Book Éditions</a></dt>
+        <dd>Pour la traduction officielle française de la gamme, dont proviennent les textes marqués « traduction officielle ».</dd>
+      </div>
+      <div>
+        <dt><a href="https://www.pathfinder-fr.org/">La communauté Pathfinder-fr</a></dt>
+        <dd>Pour la traduction collaborative des données du système Foundry VTT et du vocabulaire de jeu, publiée sous licence Apache 2.0, et pour son wiki.</dd>
+      </div>
+      <div>
+        <dt><a href="https://2e.aonprd.com/">Archives of Nethys</a></dt>
+        <dd>Pour les chapitres de règles du Remaster (texte anglais publié sous licence ORC), traduits ensuite par le site.</dd>
+      </div>
+      <div>
+        <dt>Le module Foundry « PF2e Animal Companions »</dt>
+        <dd>Pour les compagnons animaux, eidolons et compagnons artificiels, traduits par la communauté Pathfinder-fr.</dd>
+      </div>
+      <div>
+        <dt><a href="https://github.com/foundryvtt/pf2e">L'équipe du système Pathfinder 2e de Foundry VTT</a></dt>
+        <dd>Pour les données de règles structurées : niveaux, traits, coûts, effets.</dd>
+      </div>
+    </dl>
+
+    <h2>Versions utilisées</h2>
+    <ul>
+      {
+        meta.sources.map((s) => (
+          <li>
+            <a href={s.url}>{s.name}</a> : version {s.version}, révision <code>{s.commit.slice(0, 8)}</code>, licence {s.license}.
+          </li>
+        ))
+      }
+    </ul>
+    <p>Dernière mise à jour des données : {new Date(meta.date).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" })}.</p>
+
+    <h2>Origine des textes</h2>
+    <p>Chaque page indique en bas la source de chacun de ses textes et sa langue d'origine. Répartition des {formatCount(total)} descriptions :</p>
+    <ul>
+      {
+        Object.entries(meta.bySource)
+          .filter(([, n]) => n > 0)
+          .map(([source, n]) => (
+            <li>
+              {SOURCE_NAMES[source] ?? source} : {formatCount(n)} ({Math.round((n / total) * 100)} %)
+            </li>
+          ))
+      }
+    </ul>
+
+    <h2 id="traductions-du-site">Traductions du site</h2>
+    <p>
+      Quand aucune traduction française n'existe encore, le site traduit lui-même le texte anglais, avec le vocabulaire déjà établi par
+      les traductions existantes.{" "}
+      {meta.translationModel && <>La traduction automatique utilise le modèle {meta.translationModel}.{" "}</>}
+      Ces pages portent la mention « Traduction automatique, non relue » tant qu'une personne ne les a pas vérifiées.
+    </p>
+    <p>
+      Les compétences, les caractéristiques des objets (prix, encombrement, dégâts) et les profils de classe sont mis en forme par le
+      site à partir des données de règles.
+    </p>
+    <p>Les valeurs courtes et régulières (portées, durées, zones) sont converties par des règles fixes : 1,5 m pour 5 pieds, 1,5 km pour 1 mile.</p>
+  </article>
+</BaseLayout>

@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ClassProgression from "../../components/ClassProgression.astro";
+import ClassStats from "../../components/ClassStats.astro";
+import EntryHeader from "../../components/EntryHeader.astro";
+import RelatedList from "../../components/RelatedList.astro";
+import SourceNotes from "../../components/SourceNotes.astro";
+import TraitList from "../../components/TraitList.astro";
+import { COLLECTIONS } from "../../lib/collections";
+import { entries, entryTexts, hasUnreviewedTranslation, plainText } from "../../lib/data";
+import type { Entry } from "../../lib/types";
+
+export function getStaticPaths() {
+  return COLLECTIONS.flatMap((def) => entries(def.name).map((entry) => ({ params: { section: def.path, id: entry.id }, props: { entry } })));
+}
+
+const { entry } = Astro.props as { entry: Entry };
+const texts = entryTexts(entry);
+const description = plainText(entry.description.value).slice(0, 160) || `${entry.subtitle} — ${entry.name.value}`;
+---
+
+<BaseLayout title={entry.name.value} section={entry.collection} description={description}>
+  <article class="entry" data-pagefind-body>
+    <EntryHeader name={entry.name.value} type={entry.subtitle} cost={entry.actionCost} unreviewed={hasUnreviewedTranslation(texts.map(([, t]) => t))} />
+    <TraitList traits={entry.traits} rarity={entry.rarity} />
+    {entry.collection === "classes" && entry.facts.length > 0 && <ClassStats facts={entry.facts} />}
+    {
+      entry.collection !== "classes" && entry.facts.length > 0 && (
+        <dl class="properties">
+          {entry.facts.map((f) => (
+            <div>
+              <dt>{f.label}</dt>
+              <dd set:html={f.value.value} />
+            </div>
+          ))}
+        </dl>
+      )
+    }
+    {
+      entry.sections && (
+        <div class="stat-sections">
+          {entry.sections.map((f) => (
+            <div class="stat-section">
+              <strong>{f.label}</strong> <span set:html={f.value.value} />
+            </div>
+          ))}
+        </div>
+      )
+    }
+    {entry.description.value && <div class="rule-text" set:html={entry.description.value} />}
+    {entry.chapters?.map((c) => <div class="rule-text chapter" set:html={c.value} />)}
+  </article>
+  {entry.progression && <ClassProgression progression={entry.progression} />}
+  <RelatedList related={entry.related} />
+  <SourceNotes fields={texts} book={entry.book} />
+</BaseLayout>
