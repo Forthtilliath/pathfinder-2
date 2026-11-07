@@ -3,8 +3,24 @@
 /* ------------------------------------------------------------------ */
 
 .home-hero {
-  max-width: 44rem;
+  display: grid;
+  gap: 1.5rem 2.5rem;
+  align-items: center;
   padding-block: 2.5rem 3rem;
+}
+
+.home-hero-text {
+  max-width: 44rem;
+}
+
+.home-illustration {
+  margin: 0;
+}
+
+@media (min-width: 64rem) {
+  .home-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 34rem);
+  }
 }
 
 .home-hero h1 {
@@ -50,11 +66,31 @@
 }
 
 .home-section {
-  display: block;
+  display: grid;
+  grid-template-columns: 2.75rem 1fr;
+  column-gap: 0.9rem;
+  align-content: start;
   padding: 1rem 1.25rem 1.25rem 0;
   color: inherit;
   text-decoration: none;
   border-bottom: 1px solid var(--rule);
+}
+
+.home-section > :not(.section-icon) {
+  grid-column: 2;
+}
+
+.home-section .section-icon {
+  grid-row: 1 / span 2;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: 0.15rem;
+  fill: var(--icon);
+  transition: fill 0.15s;
+}
+
+.home-section:hover .section-icon {
+  fill: var(--link);
 }
 
 .home-section h3 {
@@ -78,34 +114,69 @@
   margin-top: 2.5rem;
 }
 
+/* Same heading as the browse groups, with a link to the full page. */
 .condition-shortcuts h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-size: var(--step-1);
+  font-family: var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--trait);
   margin-bottom: 0.75rem;
 }
 
+.condition-shortcuts h2 .section-icon {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: var(--icon);
+}
+
+.condition-shortcuts h2 a {
+  margin-left: auto;
+  font-size: var(--step--1);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Glossary-like index: columns, read top to bottom. */
 .condition-shortcuts ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  columns: 11rem 4;
+  column-gap: 1.5rem;
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: var(--sans);
 }
 
-.condition-shortcuts a {
+.condition-shortcuts li {
+  break-inside: avoid;
+  border-bottom: 1px dotted var(--rule);
+}
+
+.condition-shortcuts li a {
   display: block;
-  padding: 0.15rem 0.6rem;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  text-decoration: none;
+  padding: 0.3rem 0;
   color: var(--ink);
-  background: var(--surface);
+  text-decoration: none;
 }
 
-.condition-shortcuts a:hover {
-  border-color: var(--link);
+.condition-shortcuts li a:hover {
   color: var(--link);
+}
+
+.home-books {
+  margin-top: 2.5rem;
+}
+
+.home-books h2 {
+  font-size: var(--step-1);
+}
+
+.home-books .book-covers {
+  max-width: 44rem;
 }
 
 .updated-at {

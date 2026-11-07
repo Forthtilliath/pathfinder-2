@@ -1,20 +1,41 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionIcon from "../components/SectionIcon.astro";
+import BookCovers from "../components/BookCovers.astro";
+import { Image } from "astro:assets";
+import { illustration } from "../lib/illustrations";
 import { entries, entryPath, entryUrl, meta, pageCount } from "../lib/data";
 import { navGroups } from "../lib/nav";
 
 const groups = navGroups(pageCount);
 const conditions = entries("conditions");
 const formatCount = (n: number) => n.toLocaleString("fr-FR");
+const heroImage = illustration("home");
 ---
 
 <BaseLayout title="">
   <section class="home-hero">
-    <h1>Les règles de Pathfinder 2 remasterisé, en français.</h1>
-    <button type="button" class="search-field" data-open-search>
-      <span>Un sort, un don, une classe…</span>
-      <kbd>Ctrl K</kbd>
-    </button>
+    <div class="home-hero-text">
+      <h1>Les règles de Pathfinder 2 remasterisé, en français.</h1>
+      <button type="button" class="search-field" data-open-search>
+        <span>Un sort, un don, une classe…</span>
+        <kbd>Ctrl K</kbd>
+      </button>
+    </div>
+    {
+      heroImage && (
+        <figure class="home-illustration">
+          <Image
+            src={heroImage}
+            alt="Un groupe d'aventuriers contemple une vallée, une tour en ruine au loin"
+            widths={[480, 768, 1024, 1536]}
+            sizes="(min-width: 64rem) 34rem, 100vw"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
   </section>
 
   <section aria-label="Parcourir">
@@ -25,6 +46,7 @@ const formatCount = (n: number) => n.toLocaleString("fr-FR");
           <div class="home-sections">
             {g.links.map((l) => (
               <a class="home-section" href={l.href}>
+                <SectionIcon path={l.path} />
                 <h3>
                   {l.title} <span class="count">{formatCount(l.count)}</span>
                 </h3>
@@ -38,7 +60,11 @@ const formatCount = (n: number) => n.toLocaleString("fr-FR");
   </section>
 
   <section class="condition-shortcuts" aria-labelledby="condition-shortcuts-title">
-    <h2 id="condition-shortcuts-title">États</h2>
+    <h2 id="condition-shortcuts-title">
+      <SectionIcon path="etats" />
+      États en un coup d'œil
+      <a href="/etats/">Tous les détails</a>
+    </h2>
     <ul>
       {
         conditions.map((c) => (
@@ -52,5 +78,13 @@ const formatCount = (n: number) => n.toLocaleString("fr-FR");
     </ul>
   </section>
 
-  <p class="updated-at">Données mises à jour le {new Date(meta.date).toLocaleDateString("fr-FR", { dateStyle: "long" })}.</p>
+  <section class="home-books" aria-labelledby="home-books-title">
+    <h2 id="home-books-title">Les livres de base</h2>
+    <BookCovers />
+    <p><a href="/sources/#livres">D'où viennent les règles</a></p>
+  </section>
+
+  <p class="updated-at">
+    Données mises à jour le {new Date(meta.date).toLocaleDateString("fr-FR", { dateStyle: "long" })}.
+  </p>
 </BaseLayout>
