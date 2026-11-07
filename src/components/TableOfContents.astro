@@ -1,0 +1,28 @@
+---
+import type { TocHeading } from "../lib/toc";
+
+interface Props {
+  headings: TocHeading[];
+}
+
+const { headings } = Astro.props;
+---
+
+<!--
+  Side column on wide screens (always open, see client/toc.ts), collapsed
+  block above the content on narrow ones.
+-->
+<nav class="toc" aria-label="Sommaire">
+  <details>
+    <summary class="toc-title">Sommaire</summary>
+    <ol>
+      {
+        headings.map((h) => (
+          <li class={`toc-level-${h.level}`}>
+            <a href={`#${h.id}`}>{h.text}</a>
+          </li>
+        ))
+      }
+    </ol>
+  </details>
+</nav>

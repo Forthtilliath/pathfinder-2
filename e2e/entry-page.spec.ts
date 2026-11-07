@@ -19,6 +19,27 @@ test.describe("entry page", () => {
     await expect(page.locator(target)).toBeInViewport();
   });
 
+  test("table of contents also lists the progression and related lists, and stays in view", async ({ page }) => {
+    await page.goto("/classes/franc-tireur/");
+    const toc = page.getByRole("navigation", { name: "Sommaire" });
+    await expect(toc.getByRole("link", { name: "Progression" })).toBeVisible();
+    const lastLink = toc.getByRole("link").last();
+    const target = (await lastLink.getAttribute("href"))!;
+    await lastLink.click();
+    await expect(page.locator(target)).toBeInViewport();
+    // Sticky side column: still on screen far down the page.
+    await expect(toc).toBeInViewport();
+  });
+
+  test("table of contents is collapsed above the content on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/classes/franc-tireur/");
+    const toc = page.getByRole("navigation", { name: "Sommaire" });
+    await expect(toc.getByRole("link", { name: "Progression" })).toBeHidden();
+    await toc.getByText("Sommaire").click();
+    await expect(toc.getByRole("link", { name: "Progression" })).toBeVisible();
+  });
+
   test("copy link button is kept out of the search index", async ({ page }) => {
     await page.goto("/sorts/boule-de-feu/");
     await expect(page.getByRole("button", { name: "Copier le lien" })).toHaveAttribute("data-pagefind-ignore", "");
