@@ -33,51 +33,172 @@
   color: var(--ink-muted);
 }
 
-.site-header nav {
+.site-nav {
   display: flex;
+  align-items: center;
   gap: 1.1rem;
-  overflow-x: auto;
+  min-width: 0;
 }
 
-.site-header nav a {
-  color: var(--ink);
-  text-decoration: none;
-  font-weight: 500;
-  padding-block: 0.2rem;
-  border-bottom: 2px solid transparent;
-}
-
-.site-header nav a[aria-current="page"],
-.site-header nav a:hover {
-  border-bottom-color: var(--trait);
-}
-
+.menu-button,
 .search-button {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font: inherit;
-  color: var(--ink-muted);
-  background: var(--bg);
   border: 1px solid var(--rule);
   border-radius: 6px;
   padding: 0.3rem 0.6rem;
   cursor: pointer;
 }
 
+.menu-button {
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.menu-button:hover,
+.menu-button:has(+ .shortcuts + .mega-menu:popover-open) {
+  border-color: var(--trait);
+}
+
+.shortcuts {
+  display: flex;
+  gap: 1.1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.shortcuts a {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+  padding-block: 0.2rem;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.shortcuts a[aria-current],
+.shortcuts a:hover {
+  border-bottom-color: var(--trait);
+}
+
+/* Top layer, full width, right below the header (--menu-top is set when it opens). */
+.mega-menu {
+  position: fixed;
+  inset: var(--menu-top, 3.3rem) 0 auto;
+  width: auto;
+  max-height: calc(100dvh - var(--menu-top, 3.3rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: 1.5rem max(1rem, (100% - 72rem) / 2) 2rem;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  font-family: var(--sans);
+}
+
+.mega-menu::backdrop {
+  background: rgb(0 0 0 / 0.2);
+}
+
+.mega-menu-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+  gap: 1.5rem 2rem;
+}
+
+.mega-menu-title {
+  margin: 0 0 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--trait);
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: var(--step-1);
+}
+
+.mega-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mega-menu li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.3rem 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.mega-menu li a:hover {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.mega-menu li a[aria-current] {
+  font-weight: 700;
+  color: var(--link);
+}
+
+.mega-menu-close {
+  display: none;
+  margin-top: 1.5rem;
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.search-button {
+  margin-left: auto;
+  color: var(--ink-muted);
+  background: var(--bg);
+}
+
+/* Shortcuts only where they fit beside the menu button and the search field. */
+@media (max-width: 62rem) {
+  .shortcuts {
+    display: none;
+  }
+}
+
 @media (max-width: 40rem) {
   .site-header {
-    flex-wrap: wrap;
-    gap: 0.4rem 1rem;
+    gap: 0.75rem;
   }
-  .site-header nav {
-    order: 3;
-    width: 100%;
+  .mega-menu {
+    padding-top: 1rem;
   }
-  .search-button span,
+  .mega-menu-groups {
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 1.25rem 1.5rem;
+  }
+  .mega-menu-close {
+    display: block;
+  }
   .search-button kbd {
     display: none;
+  }
+  /* Icon only, but the button keeps its name for screen readers. */
+  .search-button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 

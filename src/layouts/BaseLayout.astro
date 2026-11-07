@@ -8,7 +8,7 @@ import serif400 from "@fontsource/alegreya/files/alegreya-latin-400-normal.woff2
 import serif700 from "@fontsource/alegreya/files/alegreya-latin-700-normal.woff2?url";
 import sans400 from "@fontsource/alegreya-sans/files/alegreya-sans-latin-400-normal.woff2?url";
 import sans500 from "@fontsource/alegreya-sans/files/alegreya-sans-latin-500-normal.woff2?url";
-import { COLLECTIONS } from "../lib/collections";
+import SiteMenu from "../components/SiteMenu.astro";
 import type { CollectionName } from "../lib/types";
 
 interface Props {
@@ -19,7 +19,6 @@ interface Props {
 }
 
 const { title, description = "Les règles de Pathfinder 2 remasterisé, en français.", section } = Astro.props;
-const nav = COLLECTIONS.filter((c) => c.nav).map((c) => ({ href: `/${c.path}/`, label: c.title, key: c.name }));
 ---
 
 <!doctype html>
@@ -37,23 +36,7 @@ const nav = COLLECTIONS.filter((c) => c.nav).map((c) => ({ href: `/${c.path}/`, 
     <a class="skip-link" href="#content">Aller au contenu</a>
     <header class="site-header">
       <a class="brand" href="/">PF2 <span>en français</span></a>
-      <nav aria-label="Sections">
-        {
-          nav.map((n) => (
-            <a href={n.href} aria-current={section === n.key ? "page" : undefined}>
-              {n.label}
-            </a>
-          ))
-        }
-      </nav>
-      <script is:inline>
-        // Runs before the first paint: on narrow screens the scrollable menu keeps the current section in view instead of jumping back to the start.
-        (() => {
-          const nav = document.currentScript.previousElementSibling;
-          const current = nav.querySelector('[aria-current="page"]');
-          if (current && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = current.offsetLeft - nav.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2;
-        })();
-      </script>
+      <SiteMenu section={section} />
       <button type="button" class="search-button" data-open-search aria-keyshortcuts="Control+K">
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"
           ><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.6"></circle><path
@@ -89,6 +72,7 @@ const nav = COLLECTIONS.filter((c) => c.nav).map((c) => ({ href: `/${c.path}/`, 
     <script>
       import "../client/search";
       import "../client/previews";
+      import "../client/menu";
     </script>
   </body>
 </html>

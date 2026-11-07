@@ -1,0 +1,69 @@
+---
+/**
+ * Header navigation: a "Parcourir" button opening a mega menu with every list
+ * page by group, plus a few shortcuts on wide screens. The menu is a native
+ * popover: it opens, closes on Escape or outside click without any script.
+ */
+import { COLLECTION_BY_NAME, COLLECTIONS } from "../lib/collections";
+import { pageCount } from "../lib/data";
+import { navGroups } from "../lib/nav";
+import type { CollectionName } from "../lib/types";
+
+interface Props {
+  /** Collection of the current page, if any. */
+  section?: CollectionName;
+}
+
+const { section } = Astro.props;
+const here = Astro.url.pathname.replace(/\/?$/, "/");
+const sectionHref = section ? `/${COLLECTION_BY_NAME[section].path}/` : undefined;
+// The page itself, or the list it belongs to (entry pages, views of a collection).
+const current = (href: string) => (href === here ? "page" : href === sectionHref ? "true" : undefined);
+
+const groups = navGroups(pageCount);
+const shortcuts = COLLECTIONS.filter((c) => c.nav && pageCount(c.path) > 0).map((c) => ({ href: `/${c.path}/`, title: c.title }));
+const formatCount = (n: number) => n.toLocaleString("fr-FR");
+---
+
+<nav class="site-nav" aria-label="Sections">
+  <button type="button" class="menu-button" popovertarget="site-menu">
+    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"
+      ><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg
+    >
+    <span>Parcourir</span>
+  </button>
+  <ul class="shortcuts">
+    {
+      shortcuts.map((s) => (
+        <li>
+          <a href={s.href} aria-current={current(s.href)}>
+            {s.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <div id="site-menu" class="mega-menu" popover>
+    <div class="mega-menu-groups">
+      {
+        groups.map((g, i) => (
+          <div class="mega-menu-group">
+            <p class="mega-menu-title" id={`menu-group-${i}`}>
+              {g.title}
+            </p>
+            <ul aria-labelledby={`menu-group-${i}`}>
+              {g.links.map((l) => (
+                <li>
+                  <a href={l.href} aria-current={current(l.href)}>
+                    {l.title} <span class="count">{formatCount(l.count)}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+    <button type="button" class="mega-menu-close" popovertarget="site-menu" popovertargetaction="hide">Fermer le menu</button>
+  </div>
+</nav>
