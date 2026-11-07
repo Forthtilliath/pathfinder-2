@@ -44,3 +44,14 @@ export function actionGlyphSvg(cost: ActionCost): string {
 /** Complete glyph, labelled for screen readers. Labels are constants: no escaping needed. */
 export const actionGlyphHtml = (cost: ActionCost): string =>
   `<span class="cost-glyph" role="img" aria-label="${ACTION_LABELS[cost]}" title="${ACTION_LABELS[cost]}">${actionGlyphSvg(cost)}</span>`;
+
+/** Marker left by the importer in the texts (scripts/import/action-glyphs.ts). */
+const MARKER = /<span class="cost-glyph-text cost-([a-z0-9-]+)"[^>]*>[^<]*<\/span>/g;
+
+/**
+ * Imported texts keep sanitized markers (no SVG is stored, see the data
+ * integrity test): they become the site's glyphs when the data is loaded.
+ * The SVG comes from the closed list of costs, never from the text.
+ */
+export const renderActionGlyphs = (html: string): string =>
+  html.replace(MARKER, (match, cost: string) => (cost in ACTION_LABELS ? actionGlyphHtml(cost as ActionCost) : match));

@@ -5,17 +5,21 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { COLLECTION_BY_NAME, COLLECTION_BY_PATH, COLLECTIONS, entryPath, VIEWS } from "./collections";
+import { renderActionGlyphs } from "./action-glyph";
 import { normalize } from "./normalize";
 import type { CollectionName, Entry, ImportMeta, ListItem, ListRow, Preview, Provenance, Text } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "src/data");
 const cache = new Map<CollectionName, Entry[]>();
 
+/** JSON reviver: action cost markers of the imported texts → SVG glyphs. */
+const withGlyphs = (_key: string, value: unknown) => (typeof value === "string" && value.includes("cost-glyph-text") ? renderActionGlyphs(value) : value);
+
 export function entries(collection: CollectionName): Entry[] {
   let list = cache.get(collection);
   if (!list) {
     const file = path.join(DATA_DIR, `${collection}.json`);
-    list = existsSync(file) ? (JSON.parse(readFileSync(file, "utf8")) as Entry[]) : [];
+    list = existsSync(file) ? (JSON.parse(readFileSync(file, "utf8"), withGlyphs) as Entry[]) : [];
     cache.set(collection, list);
   }
   return list;
