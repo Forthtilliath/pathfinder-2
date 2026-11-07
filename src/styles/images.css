@@ -1,0 +1,86 @@
+/* ------------------------------------------------------------------ */
+/* Book covers and illustrations                                       */
+/* ------------------------------------------------------------------ */
+
+.book-covers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: 1.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.book-covers figure {
+  margin: 0;
+}
+
+.book-covers img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 386 / 513;
+  /* Covers are shown whole, never cropped. */
+  object-fit: contain;
+  border-radius: 3px;
+  box-shadow: var(--shadow);
+}
+
+.book-covers figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.6rem;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.book-covers figcaption strong {
+  font-family: var(--serif);
+  font-size: var(--step-0);
+  color: var(--ink);
+}
+
+.book-covers.detailed {
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+}
+
+/* Engraving-style illustrations: drawn on cream paper, so they get a paper-like card in both schemes. */
+.entry-illustration {
+  margin: 1rem auto 1.25rem;
+  max-width: 16rem;
+}
+
+.entry-illustration img,
+.home-illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+@media (min-width: 48rem) {
+  .entry-illustration {
+    float: right;
+    width: min(40%, 18rem);
+    max-width: none;
+    margin: 0.25rem 0 1.25rem 1.75rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .entry-illustration img,
+  .home-illustration img {
+    /* Slightly dimmed so the cream paper does not glare on a dark page. */
+    filter: brightness(0.88);
+  }
+}
+
+.paizo-notice {
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  border-left: 3px solid var(--rule);
+  padding-left: 0.9rem;
+}

@@ -46,7 +46,11 @@ const imageUrl = new URL("/og-image.png", Astro.site).href;
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="PF2 en français : les règles de Pathfinder 2 remasterisé" />
     <meta name="twitter:card" content="summary_large_image" />
-    {[serif400, serif700, sans400, sans500].map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+    {
+      [serif400, serif700, sans400, sans500].map((href) => (
+        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+      ))
+    }
   </head>
   <body>
     <a class="skip-link" href="#content">Aller au contenu</a>
@@ -72,15 +76,21 @@ const imageUrl = new URL("/og-image.png", Astro.site).href;
 
     <footer class="site-footer">
       <p>
-        Site non officiel. Pathfinder est une marque de Paizo Inc., traduite en français par Black Book Éditions.{" "}
+        Site non officiel, gratuit, ni publié ni approuvé par Paizo. Pathfinder est une marque de Paizo Inc., traduite
+        en français par Black Book Éditions ; marques et images de Paizo utilisées selon sa
+        <a href="https://paizo.com/licenses/communityuse">Community Use Policy</a>.{" "}
         <a href="/sources/">Sources et remerciements</a>
       </p>
     </footer>
 
     <dialog class="search-dialog" aria-label="Recherche">
-      <form method="dialog" class="search-close"><button>Échap<span class="visually-hidden"> : fermer la recherche</span></button></form>
+      <form method="dialog" class="search-close">
+        <button>Échap<span class="visually-hidden"> : fermer la recherche</span></button>
+      </form>
       <div id="search-root"></div>
-      <p class="search-unavailable" hidden>La recherche est disponible une fois le site construit (npm run build), pas en mode développement.</p>
+      <p class="search-unavailable" hidden>
+        La recherche est disponible une fois le site construit (npm run build), pas en mode développement.
+      </p>
     </dialog>
 
     <div class="preview" role="tooltip" hidden></div>
