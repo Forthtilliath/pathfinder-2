@@ -6,6 +6,7 @@ import { entryPath } from "../../src/lib/collections.ts";
 import type { CollectionName } from "../../src/lib/types.ts";
 import { feetToMeters, translateArea } from "./rules.ts";
 import { parseUuid, tokenize, type Token } from "./enricher-tokens.ts";
+import { markActionGlyphs } from "./action-glyphs.ts";
 
 export { parseUuid, protect, restore, tokenize, uuidTargetName, type Segment, type Token, type UuidTarget } from "./enricher-tokens.ts";
 
@@ -178,30 +179,10 @@ function renderToken(t: Token, ctx: RenderContext, depth: number): string {
   }
 }
 
-const GLYPHS: Record<string, [string, string]> = {
-  "1": ["◆", "1 action"],
-  a: ["◆", "1 action"],
-  "2": ["◆◆", "2 actions"],
-  d: ["◆◆", "2 actions"],
-  "3": ["◆◆◆", "3 actions"],
-  t: ["◆◆◆", "3 actions"],
-  r: ["⟲", "réaction"],
-  f: ["◇", "action gratuite"],
-  "0": ["◇", "action gratuite"],
-};
-
-/** Foundry's <span class="action-glyph">2</span> relies on a custom font: use plain symbols. */
-function replaceActionGlyphs(html: string): string {
-  return html.replace(/<span class="action-glyph">([^<]*)<\/span>/g, (match, code: string) => {
-    const glyph = GLYPHS[code.trim().toLowerCase()];
-    return glyph ? `<span class="cost-glyph-text" title="${glyph[1]}" aria-label="${glyph[1]}">${glyph[0]}</span>` : match;
-  });
-}
-
-/** Turns a Foundry text into French HTML ready to display. */
+/** Turns a Foundry text into French HTML ready to display (action glyphs as markers, see action-glyphs.ts). */
 export function enrich(text: string, ctx: RenderContext, depth = 0): string {
   return (
-    tokenize(replaceActionGlyphs(text))
+    tokenize(markActionGlyphs(text))
       .map((s) => (typeof s === "string" ? s : renderToken(s, ctx, depth)))
       .join("")
       // The text around a damage roll often repeats "dégâts": dedupe.
