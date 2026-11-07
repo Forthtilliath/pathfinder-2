@@ -18,7 +18,8 @@ export interface EntryContext {
 
 const enrichText = (ctx: EntryContext, t: Text): Text => ({ ...t, value: ctx.toHtml(t.value) });
 
-export const publicationTitle = (d: Draft): string => (d.doc.system.publication ?? d.doc.system.details?.publication)?.title ?? "";
+export const publicationTitle = (d: Draft): string =>
+  (d.doc.system.publication ?? d.doc.system.details?.publication)?.title ?? "";
 
 export function buildEntry(d: Draft, ctx: EntryContext): Entry {
   const s = d.doc.system;
@@ -34,7 +35,11 @@ export function buildEntry(d: Draft, ctx: EntryContext): Entry {
       }
       if (!spec.value) continue;
       const resolved = ctx.resolveTokens(spec.value);
-      if (resolved) out.push({ label, value: text(ctx.toHtml(resolved.value), resolved.ai ? siteTranslation("unreviewed") : RULE) });
+      if (resolved)
+        out.push({
+          label,
+          value: text(ctx.toHtml(resolved.value), resolved.ai ? siteTranslation("unreviewed") : RULE),
+        });
     }
     return out;
   };
@@ -45,13 +50,18 @@ export function buildEntry(d: Draft, ctx: EntryContext): Entry {
     filters[key] = values.map((v) => ctx.resolveTokens(v)?.value).filter((v): v is string => Boolean(v));
   }
   const traitSlugs: string[] = (s.traits?.value ?? []).filter((t: string) => !RARITY_TRAITS.has(t));
-  const rarity = (["common", "uncommon", "rare", "unique"].includes(s.traits?.rarity) ? s.traits.rarity : "common") as Rarity;
+  const rarity = (
+    ["common", "uncommon", "rare", "unique"].includes(s.traits?.rarity) ? s.traits.rarity : "common"
+  ) as Rarity;
   filters.rarity = [RARITY_LABELS[rarity]];
   if (d.collection === "feats") filters.trait = traitSlugs.map(ctx.traits.name).filter(Boolean) as string[];
-  if (d.collection === "spells") filters.tradition = (d.extraTraits ?? []).map(ctx.traits.name).filter(Boolean) as string[];
+  if (d.collection === "spells")
+    filters.tradition = (d.extraTraits ?? []).map(ctx.traits.name).filter(Boolean) as string[];
   const family = d.collection === "monsterAbilities" ? familyOf(d.name!) : null;
   if (family) filters.family = [family];
   const book = ctx.bookName(publicationTitle(d));
+  // Book facet; some sources set their own (rules: "Écran du MJ").
+  if (book && !filters.book) filters.book = [book.value];
   const roleplay = d.fields.get("roleplay")?.french;
 
   return {
@@ -65,7 +75,9 @@ export function buildEntry(d: Draft, ctx: EntryContext): Entry {
     actionCost: d.actionCost,
     traits: [...new Set(traitSlugs.map((t) => ctx.traits.idBySlug.get(t)).filter(Boolean) as string[])],
     rarity,
-    book: book ? { name: book, license: (s.publication ?? s.details?.publication)?.license === "OGL" ? "OGL" : "ORC" } : undefined,
+    book: book
+      ? { name: book, license: (s.publication ?? s.details?.publication)?.license === "OGL" ? "OGL" : "ORC" }
+      : undefined,
     facts,
     sections: sections.length ? sections : undefined,
     chapters: roleplay ? [enrichText(ctx, roleplay)] : undefined,
