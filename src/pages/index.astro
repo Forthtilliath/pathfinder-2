@@ -4,11 +4,10 @@ import SectionIcon from "../components/SectionIcon.astro";
 import BookCovers from "../components/BookCovers.astro";
 import { Image } from "astro:assets";
 import { illustration } from "../lib/illustrations";
-import { entries, entryPath, entryUrl, meta, pageCount } from "../lib/data";
+import { meta, pageCount } from "../lib/data";
 import { navGroups } from "../lib/nav";
 
 const groups = navGroups(pageCount);
-const conditions = entries("conditions");
 const formatCount = (n: number) => n.toLocaleString("fr-FR");
 const heroImage = illustration("home");
 ---
@@ -57,25 +56,6 @@ const heroImage = illustration("home");
         </section>
       ))
     }
-  </section>
-
-  <section class="condition-shortcuts" aria-labelledby="condition-shortcuts-title">
-    <h2 id="condition-shortcuts-title">
-      <SectionIcon path="etats" />
-      États en un coup d'œil
-      <a href="/etats/">Tous les détails</a>
-    </h2>
-    <ul>
-      {
-        conditions.map((c) => (
-          <li>
-            <a href={entryUrl(c)} data-preview={entryPath(c.collection, c.id)}>
-              {c.name.value}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
   </section>
 
   <section class="home-books" aria-labelledby="home-books-title">
