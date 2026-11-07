@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FilterableList, { type FacetOptions } from "../../components/FilterableList";
-import { COLLECTION_BY_NAME, COLLECTIONS, VIEWS, type FacetDef } from "../../lib/collections";
+import { COLLECTION_BY_NAME, COLLECTIONS, compareFacetValues, VIEWS, type FacetDef } from "../../lib/collections";
 import { listItem, listRows } from "../../lib/data";
 import type { CollectionName } from "../../lib/types";
 
@@ -17,7 +17,14 @@ interface Page {
 
 export function getStaticPaths() {
   const pages: Page[] = [
-    ...COLLECTIONS.map((c) => ({ path: c.path, title: c.title, noun: c.noun, intro: c.intro, base: c.name, facets: c.facets })),
+    ...COLLECTIONS.map((c) => ({
+      path: c.path,
+      title: c.title,
+      noun: c.noun,
+      intro: c.intro,
+      base: c.name,
+      facets: c.facets,
+    })),
     ...VIEWS.map((v) => ({ ...v, facets: COLLECTION_BY_NAME[v.base].facets.filter((f) => f.key !== v.filter.key) })),
   ];
   return pages.map((page) => ({ params: { section: page.path }, props: { page } }));
@@ -32,10 +39,12 @@ const complete = rows.length <= INITIAL;
 // Facet options are computed here from every row, so the client only needs the rows.
 const facets: FacetOptions[] = page.facets.map((f) => {
   const values = [...new Set(rows.flatMap((r) => r.filters[f.key] ?? []))];
-  values.sort(
-    f.order ? (a, b) => f.order!.indexOf(a) - f.order!.indexOf(b) : f.numeric ? (a, b) => Number(a) - Number(b) : (a, b) => a.localeCompare(b, "fr"),
-  );
-  return { key: f.key, label: f.label, options: values };
+  values.sort(compareFacetValues(f));
+  // Long text facets (traits, books) fold; numeric ones (levels) always show whole.
+  // With an explicit order (books), the visible part is the listed values present here (core books).
+  const listed = values.filter((v) => f.order?.includes(v)).length;
+  const collapseAfter = !f.numeric && values.length > 12 ? listed || 8 : undefined;
+  return { key: f.key, label: f.label, options: values, collapseAfter };
 });
 ---
 
