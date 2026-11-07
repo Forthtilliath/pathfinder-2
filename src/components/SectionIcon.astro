@@ -1,0 +1,18 @@
+---
+import { ICON_SPRITE, SECTION_ICONS } from "../lib/section-icons";
+
+interface Props {
+  /** List page path, e.g. "sorts". */
+  path: string;
+  class?: string;
+}
+const { path, class: className } = Astro.props;
+---
+
+{
+  SECTION_ICONS[path] && (
+    <svg class:list={["section-icon", className]} aria-hidden="true" focusable="false">
+      <use href={`${ICON_SPRITE}#${path}`} />
+    </svg>
+  )
+}
