@@ -11,6 +11,8 @@ const { fields, book } = Astro.props;
 const groups = groupByProvenance(fields);
 const foundry = meta.sources.find((s) => s.id === "foundry-pf2e");
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+// A book with no French edition keeps its English title (provenance: Foundry, English).
+const bookLang = book?.name.provenance.source === "foundry-pf2e" ? "en" : undefined;
 ---
 
 <aside class="source-notes" aria-labelledby="source-notes-title">
@@ -26,15 +28,16 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     {
       foundry && (
         <li>
-          <span class="source-fields">Données de règles</span> : <a href={foundry.url}>{foundry.name}</a> (version {foundry.version}, révision{" "}
-          <code>{foundry.commit.slice(0, 8)}</code>).
+          <span class="source-fields">Données de règles</span> : <a href={foundry.url}>{foundry.name}</a> (version{" "}
+          {foundry.version}, révision <code>{foundry.commit.slice(0, 8)}</code>).
         </li>
       )
     }
     {
       book && (
         <li>
-          <span class="source-fields">Ouvrage d'origine</span> : {book.name.value}, licence {book.license}.
+          <span class="source-fields">Ouvrage d'origine</span> : <cite lang={bookLang}>{book.name.value}</cite>, licence{" "}
+          {book.license}.
         </li>
       )
     }
