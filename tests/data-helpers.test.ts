@@ -24,6 +24,10 @@ describe("plainText", () => {
   it("removes tags, non-breaking spaces and extra whitespace", () => {
     expect(plainText("<p>Un&nbsp;souffle</p>\n<p><strong>de</strong>   feu</p>")).toBe("Un souffle de feu");
   });
+
+  it("decodes entities, so excerpts do not show &gt; or &amp;", () => {
+    expect(plainText("PV &gt; 0 &amp; &quot;tenace&quot; &#39;x&#x27; &eacute;")).toBe("PV > 0 & \"tenace\" 'x' &eacute;");
+  });
 });
 
 describe("preview", () => {

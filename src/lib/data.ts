@@ -77,11 +77,17 @@ export function listRows(collection: CollectionName, filter?: { key: string; val
   return filter ? rows.filter((r) => r.filters[filter.key]?.includes(filter.value)) : rows;
 }
 
-/** Plain text without tags, for excerpts. */
+const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+
+/** Plain text without tags or entities, for excerpts (rendered as text, so decoding is safe). */
 export function plainText(html: string): string {
   return html
     .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
+    .replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
+      if (code[0] !== "#") return ENTITIES[code.toLowerCase()] ?? entity;
+      const n = code[1] === "x" || code[1] === "X" ? parseInt(code.slice(2), 16) : Number(code.slice(1));
+      return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : entity;
+    })
     .replace(/\s+/g, " ")
     .trim();
 }
