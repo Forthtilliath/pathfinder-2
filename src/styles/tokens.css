@@ -12,6 +12,8 @@
   --link: #1d5671;
   --trait: #6b1d26;
   --trait-ink: #f7f3ec;
+  /* Decorative icons (game-icons.net). */
+  --icon: #6b1d26;
   /* Rarity, as in most games: common white/ink, uncommon green, rare blue, unique orange. */
   --uncommon: #23772f;
   --rare: #1a5fb4;
@@ -50,6 +52,7 @@
     --link: #8ec3d9;
     --trait: #8a2c36;
     --trait-ink: #f7f0ee;
+    --icon: #c9727b;
     --uncommon: #6fd27c;
     --rare: #78acff;
     --unique: #ff9d45;
