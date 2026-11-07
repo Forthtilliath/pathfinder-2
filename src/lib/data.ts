@@ -4,7 +4,7 @@
  */
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { COLLECTION_BY_NAME, COLLECTIONS, entryPath } from "./collections";
+import { COLLECTION_BY_NAME, COLLECTION_BY_PATH, COLLECTIONS, entryPath, VIEWS } from "./collections";
 import { normalize } from "./normalize";
 import type { CollectionName, Entry, ImportMeta, ListItem, ListRow, Preview, Provenance, Text } from "./types";
 
@@ -19,6 +19,20 @@ export function entries(collection: CollectionName): Entry[] {
     cache.set(collection, list);
   }
   return list;
+}
+
+const countCache = new Map<string, number>();
+
+/** Number of entries on a list page (collection or view), by URL path. */
+export function pageCount(pagePath: string): number {
+  let n = countCache.get(pagePath);
+  if (n === undefined) {
+    const collection = COLLECTION_BY_PATH[pagePath];
+    const view = VIEWS.find((v) => v.path === pagePath);
+    n = collection ? entries(collection.name).length : view ? entries(view.base).filter((e) => e.filters[view.filter.key]?.includes(view.filter.value)).length : 0;
+    countCache.set(pagePath, n);
+  }
+  return n;
 }
 
 export const meta = JSON.parse(readFileSync(path.join(DATA_DIR, "meta.json"), "utf8")) as ImportMeta;
