@@ -7,7 +7,7 @@ import path from "node:path";
 import type { CollectionName, Entry, Text } from "../../src/lib/types.ts";
 import type { Draft } from "./adapters.ts";
 import { readAonSkills } from "./aon.ts";
-import { buildEntry, publicationTitle } from "./build-entry.ts";
+import { buildEntry } from "./build-entry.ts";
 import { IMPORT_RULES, REPORT_FILE, REPOS, TRANSLATIONS_DIR } from "./config.ts";
 import { readDrafts } from "./drafts.ts";
 import { enrich, type RenderContext } from "./enrichers.ts";
@@ -17,7 +17,7 @@ import { assignIds, buildLinkIndex, factContext, skillIds } from "./links.ts";
 import { writeData, writeReport, type ImportReport } from "./output.ts";
 import { packNames } from "./packs.ts";
 import { indexTranslations } from "./pathfinder-fr.ts";
-import { FR_LANGUAGE_FILE, RULE, siteTranslation, text } from "./provenance.ts";
+import { FR_LANGUAGE_FILE, siteTranslation, text, UNTRANSLATED } from "./provenance.ts";
 import { buildSkills, relateEntries } from "./relations.ts";
 import { sanitize } from "./sanitize.ts";
 import { DAMAGE_TYPES, RARITY_TRAITS, SKILL_ATTRIBUTES, STATISTICS } from "./terms.ts";
@@ -44,12 +44,17 @@ async function main() {
   const languageRepo = fetchRepo(REPOS.language, offline);
 
   console.log("2. Reading language files");
-  const englishDict = loadDictionary(path.join(foundry.dir, "static/lang"), (n) => n.endsWith("en.json") && !n.startsWith("sf2e"));
+  const englishDict = loadDictionary(
+    path.join(foundry.dir, "static/lang"),
+    (n) => n.endsWith("en.json") && !n.startsWith("sf2e"),
+  );
   const frenchDict = loadDictionary(languageRepo.dir, (n) => n.endsWith("fr.json"));
   const traitKeys = loadTraitKeys(path.join(foundry.dir, "src/scripts/config/traits.ts"));
   const translations = indexTranslations(translationRepo.dir, ["data"]);
   const packs = packNames(path.join(foundry.dir, "system.pf2e.json"));
-  console.log(`   ${englishDict.size} English keys, ${frenchDict.size} French keys, ${translations.size} pathfinder-fr files`);
+  console.log(
+    `   ${englishDict.size} English keys, ${frenchDict.size} French keys, ${translations.size} pathfinder-fr files`,
+  );
 
   const neededKeys = new Map<string, string>();
   const labels = {
@@ -77,7 +82,11 @@ async function main() {
 
   const translator = new Translator(!noTranslate, new Map());
   buildGlossary(translator, drafts, traitKeys, englishDict, frenchDict);
-  console.log(translator.enabled ? `4. Translating missing texts (${translator.model})` : "4. Machine translation disabled: only cached translations are used");
+  console.log(
+    translator.enabled
+      ? `4. Translating missing texts (${translator.model})`
+      : "4. Machine translation disabled: only cached translations are used",
+  );
   await translateDrafts(translator, drafts);
   const kept = keepTranslated(drafts, report);
 
@@ -96,10 +105,6 @@ async function main() {
   }
   const booksFile = path.join(TRANSLATIONS_DIR, "books.json");
   const bookTitles: Record<string, string> = existsSync(booksFile) ? JSON.parse(readFileSync(booksFile, "utf8")) : {};
-  for (const d of kept) {
-    const title = publicationTitle(d);
-    if (title && !bookTitles[title]) neededKeys.set(`book:${title}`, title);
-  }
   const siteDict = await translator.translateKeys(
     neededKeys,
     "Context: labels of a rules system (traits, languages, weapon groups, divine domains…) and book titles of the Pathfinder 2 line. For a book title, give the usual French title if one exists, otherwise a natural translation.",
@@ -114,13 +119,15 @@ async function main() {
   };
   const traits = buildTraitPages(usedTraits, traitKeys, label, report);
 
+  // Book titles: the official French title when there is one (translations/books.json), otherwise the
+  // English title as published, never a made-up translation: readers must be able to find the book.
   const bookName = (title: string): Text | undefined => {
-    if (!title) return undefined;
-    if (bookTitles[title]) return text(bookTitles[title], { source: "site", sourceLanguage: "en", status: "reviewed", method: "human" });
-    const site = siteDict.get(`book:${title}`);
-    if (site) return text(site.french, siteTranslation(site.status));
-    warn(`book title without translation: ${title}`);
-    return text("Supplément Pathfinder 2", RULE);
+    const clean = title.replace(/\s+/g, " ").trim();
+    if (!clean) return undefined;
+    if (bookTitles[clean])
+      return text(bookTitles[clean], { source: "site", sourceLanguage: "en", status: "reviewed", method: "human" });
+    // "Pathfinder Guns & Gears" → "Guns & Gears"; kept where it is part of the name ("Pathfinder #210", Society).
+    return text(clean.replace(/^Pathfinder (?!#|Society)/, ""), UNTRANSLATED);
   };
 
   /** Replaces ⟪key⟫ tokens. Returns null when a label is missing. */
@@ -157,7 +164,8 @@ async function main() {
     localize: (key) => frenchDict.get(key) ?? siteDict.get(key)?.french ?? null,
     report: warn,
   };
-  const dropDeadLinks = (value: string) => value.replace(LONE_LINK, (all, pack: string, key: string) => (links.index.has(`${pack}:${key}`) ? all : ""));
+  const dropDeadLinks = (value: string) =>
+    value.replace(LONE_LINK, (all, pack: string, key: string) => (links.index.has(`${pack}:${key}`) ? all : ""));
   /** Final HTML of a page: Foundry syntax rendered, then filtered (rendered with set:html). */
   const toHtml = (value: string) => sanitize(enrich(dropDeadLinks(value), renderCtx));
   const enrichText = (t: Text): Text => ({ ...t, value: toHtml(t.value) });
@@ -187,8 +195,14 @@ async function main() {
     Object.keys(SKILL_ATTRIBUTES).map(async (slug) => {
       const english = aonSkills.get(slug);
       if (!english) return;
-      const result = await translator.translateEntry("skills", slug, { description: english }, `Context: description of the skill "${slug}".`);
-      if (result) skillDescriptions.set(slug, enrichText(text(result.fields.description, siteTranslation(result.status))));
+      const result = await translator.translateEntry(
+        "skills",
+        slug,
+        { description: english },
+        `Context: description of the skill "${slug}".`,
+      );
+      if (result)
+        skillDescriptions.set(slug, enrichText(text(result.fields.description, siteTranslation(result.status))));
       else {
         report.excluded.push(`skills: ${slug} (missing: description)`);
         report.untranslatedChars += english.length;
