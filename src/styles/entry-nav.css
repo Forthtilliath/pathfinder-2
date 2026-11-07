@@ -123,6 +123,30 @@
   color: var(--link);
 }
 
+/* Section being read (client/toc.ts). Colour and a mark only: no weight change, so the column never rewraps. */
+.toc li {
+  position: relative;
+}
+
+.toc a[aria-current] {
+  color: var(--link);
+}
+
+@media (min-width: 60rem) {
+  /* The mark sits against the column's left border (inside it: the scrolling column clips its overflow).
+     The offset is from the item's padding box, so sub-items (indented by their own padding) need no other value. */
+  .toc a[aria-current]::before {
+    content: "";
+    position: absolute;
+    left: -1rem;
+    top: 0.15rem;
+    bottom: 0.15rem;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--link);
+  }
+}
+
 /* "Copy link" button */
 
 .copy-link {
