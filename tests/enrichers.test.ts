@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { enrich, protect, restore, tokenize, type RenderContext } from "../scripts/import/enrichers.ts";
 import { translateCastingTime, translateDuration, translateRange } from "../scripts/import/rules.ts";
 import { DAMAGE_TYPES, STATISTICS } from "../scripts/import/terms.ts";
+import { sanitize } from "../scripts/import/sanitize.ts";
+import { actionGlyphHtml, renderActionGlyphs } from "../src/lib/action-glyph.ts";
 
 const ctx: RenderContext = {
   resolve: (pack, key) => (pack === "conditionitems" && key === "Frightened" ? { collection: "conditions", id: "effraye", name: "Effrayé" } : null),
@@ -71,9 +73,26 @@ describe("rules", () => {
 });
 
 describe("action glyphs", () => {
-  it("replaces Foundry glyph spans with symbols", () => {
+  it("replaces Foundry glyph spans with markers", () => {
     expect(enrich('<span class="action-glyph">2</span>', ctx)).toBe(
-      '<span class="cost-glyph-text" title="2 actions" aria-label="2 actions">◆◆</span>',
+      '<span class="cost-glyph-text cost-2" title="2 actions" aria-label="2 actions">◆◆</span>',
     );
+  });
+
+  it("reads pathfinder-fr icon spans and their variants", () => {
+    expect(enrich('Aider <span class="pf2-icon">R</span>', ctx)).toContain('class="cost-glyph-text cost-reaction"');
+    expect(enrich("<span class='pf2-icon'>F</span>", ctx)).toContain("cost-free");
+    expect(enrich('<span title="Two Actions" class="action action-glyph">d</span>', ctx)).toContain("cost-2");
+    expect(enrich('<span class="action-glyph">1 – 3</span>', ctx)).toContain("cost-1-3");
+    expect(enrich('<span class="action-glyph">?</span>', ctx)).toBe("<span>?</span>");
+  });
+
+  it("keeps markers through the sanitizer, then renders them as the site's SVG glyphs", () => {
+    const html = renderActionGlyphs(sanitize(enrich('Aider <span class="pf2-icon">R</span>', ctx)));
+    expect(html).toBe(`Aider ${actionGlyphHtml("reaction")}`);
+  });
+
+  it("does not turn other spans into glyphs", () => {
+    expect(renderActionGlyphs('<span class="cost-glyph-text cost-bogus">x</span>')).toBe('<span class="cost-glyph-text cost-bogus">x</span>');
   });
 });
