@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-07T01:50:03.295Z",
+  "sources": [
+    {
+      "id": "foundry-pf2e",
+      "name": "Système Pathfinder 2e pour Foundry VTT",
+      "url": "https://github.com/foundryvtt/pf2e",
+      "license": "Apache 2.0 (code), ORC et OGL (contenu Paizo)",
+      "version": "v14-dev",
+      "commit": "ae999ce5d5c4c5cad2359d9710af5a8522a7083d"
+    },
+    {
+      "id": "aon",
+      "name": "Archives of Nethys (règles, plans, familles de créatures, groupes d'armes, compétences)",
+      "url": "https://2e.aonprd.com/",
+      "license": "ORC",
+      "version": "index de recherche",
+      "commit": "20261107"
+    },
+    {
+      "id": "pathfinder-fr",
+      "name": "Traduction de la communauté Pathfinder-fr",
+      "url": "https://gitlab.com/pathfinder-fr/foundryvtt-pathfinder2-fr",
+      "license": "Apache 2.0",
+      "version": "master",
+      "commit": "5dfcac34df087ced2ce9f2720e9df164a0eed35e"
+    }
+  ],
+  "counts": {
+    "companions": 375,
+    "equipment": 4083,
+    "creatures": 1001,
+    "feats": 4771,
+    "deities": 447,
+    "monsterAbilities": 308,
+    "classFeatures": 808,
+    "actions": 480,
+    "spells": 1562,
+    "rules": 56,
+    "archetypes": 257,
+    "heritages": 222,
+    "backgrounds": 232,
+    "domains": 61,
+    "familiarAbilities": 92,
+    "classes": 29,
+    "ancestries": 34,
+    "vehicles": 82,
+    "conditions": 43,
+    "hazards": 31,
+    "skills": 16,
+    "traits": 479
+  },
+  "bySource": {
+    "pathfinder-fr": 14118,
+    "bbe": 944,
+    "site": 34,
+    "foundry-pf2e": 0,
+    "aon": 0
+  },
+  "translationModel": "claude-sonnet-5-5"
+}
