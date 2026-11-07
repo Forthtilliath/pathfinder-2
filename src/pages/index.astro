@@ -1,12 +1,9 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { COLLECTIONS, VIEWS } from "../lib/collections";
-import { entries, entryPath, entryUrl, meta } from "../lib/data";
+import { entries, entryPath, entryUrl, meta, pageCount } from "../lib/data";
+import { navGroups } from "../lib/nav";
 
-const sections = [
-  ...COLLECTIONS.map((c) => ({ path: c.path, title: c.title, intro: c.intro, count: entries(c.name).length })),
-  ...VIEWS.map((v) => ({ path: v.path, title: v.title, intro: v.intro, count: entries(v.base).filter((e) => e.filters[v.filter.key]?.includes(v.filter.value)).length })),
-].filter((c) => c.count > 0);
+const groups = navGroups(pageCount);
 const conditions = entries("conditions");
 const formatCount = (n: number) => n.toLocaleString("fr-FR");
 ---
@@ -20,15 +17,22 @@ const formatCount = (n: number) => n.toLocaleString("fr-FR");
     </button>
   </section>
 
-  <section class="home-sections" aria-label="Parcourir">
+  <section aria-label="Parcourir">
     {
-      sections.map((s) => (
-        <a class="home-section" href={`/${s.path}/`}>
-          <h2>
-            {s.title} <span class="count">{formatCount(s.count)}</span>
-          </h2>
-          <p>{s.intro}</p>
-        </a>
+      groups.map((g, i) => (
+        <section class="home-group" aria-labelledby={`home-group-${i}`}>
+          <h2 id={`home-group-${i}`}>{g.title}</h2>
+          <div class="home-sections">
+            {g.links.map((l) => (
+              <a class="home-section" href={l.href}>
+                <h3>
+                  {l.title} <span class="count">{formatCount(l.count)}</span>
+                </h3>
+                <p>{l.intro}</p>
+              </a>
+            ))}
+          </div>
+        </section>
       ))
     }
   </section>
