@@ -5,6 +5,11 @@ dist/
 .env
 .env.*
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
 # Markdown: only README and CHANGELOG are tracked
 *.md
 !README.md
