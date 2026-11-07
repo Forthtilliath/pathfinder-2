@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import ClassProgression from "../../components/ClassProgression.astro";
 import ClassStats from "../../components/ClassStats.astro";
 import EntryHeader from "../../components/EntryHeader.astro";
+import EntryIllustration from "../../components/EntryIllustration.astro";
 import RelatedList from "../../components/RelatedList.astro";
 import SourceNotes from "../../components/SourceNotes.astro";
 import TableOfContents from "../../components/TableOfContents.astro";
@@ -14,13 +15,16 @@ import { addHeadingIds, type TocHeading } from "../../lib/toc";
 import type { Entry } from "../../lib/types";
 
 export function getStaticPaths() {
-  return COLLECTIONS.flatMap((def) => entries(def.name).map((entry) => ({ params: { section: def.path, id: entry.id }, props: { entry } })));
+  return COLLECTIONS.flatMap((def) =>
+    entries(def.name).map((entry) => ({ params: { section: def.path, id: entry.id }, props: { entry } })),
+  );
 }
 
 const { entry } = Astro.props as { entry: Entry };
 const texts = entryTexts(entry);
 const description = plainText(entry.description.value).slice(0, 160) || `${entry.subtitle} — ${entry.name.value}`;
 const collection = COLLECTION_BY_NAME[entry.collection];
+const isClass = entry.collection === "classes";
 
 // Anchors for the table of contents, computed server-side so the rendered
 // headings carry ids (deep links and SEO, no client-side re-layout).
@@ -50,9 +54,15 @@ const hasToc = toc.length >= 3;
     {hasToc && <TableOfContents headings={toc} />}
     <div class="entry-main">
       <article class="entry" data-pagefind-body>
-        <EntryHeader name={entry.name.value} type={entry.subtitle} cost={entry.actionCost} unreviewed={hasUnreviewedTranslation(texts.map(([, t]) => t))} />
+        <EntryHeader
+          name={entry.name.value}
+          type={entry.subtitle}
+          cost={entry.actionCost}
+          unreviewed={hasUnreviewedTranslation(texts.map(([, t]) => t))}
+        />
         <button type="button" class="copy-link" data-pagefind-ignore>Copier le lien</button>
         <TraitList traits={entry.traits} rarity={entry.rarity} />
+        {!isClass && <EntryIllustration collection={entry.collection} id={entry.id} name={entry.name.value} />}
         {entry.collection === "classes" && entry.facts.length > 0 && <ClassStats facts={entry.facts} />}
         {
           entry.collection !== "classes" && entry.facts.length > 0 && (
@@ -77,6 +87,8 @@ const hasToc = toc.length >= 3;
             </div>
           )
         }
+        {/* Classes: after the stat blocks, so the floated picture does not squeeze them. */}
+        {isClass && <EntryIllustration collection={entry.collection} id={entry.id} name={entry.name.value} />}
         {descriptionHtml && <div class="rule-text" set:html={descriptionHtml} />}
         {chapters.map((c) => <div class="rule-text chapter" set:html={c.html} />)}
       </article>
