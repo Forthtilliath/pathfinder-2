@@ -79,7 +79,7 @@ const nav = COLLECTIONS.filter((c) => c.nav).map((c) => ({ href: `/${c.path}/`, 
     </footer>
 
     <dialog class="search-dialog" aria-label="Recherche">
-      <form method="dialog" class="search-close"><button aria-label="Fermer la recherche">Échap</button></form>
+      <form method="dialog" class="search-close"><button>Échap<span class="visually-hidden"> : fermer la recherche</span></button></form>
       <div id="search-root"></div>
       <p class="search-unavailable" hidden>La recherche est disponible une fois le site construit (npm run build), pas en mode développement.</p>
     </dialog>
