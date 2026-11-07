@@ -26,8 +26,8 @@ test.describe("full-text search", () => {
 
 test.describe("link previews", () => {
   test("shows a preview on hover", async ({ page }) => {
-    await page.goto("/");
-    const link = page.getByRole("region", { name: "États" }).getByRole("link", { name: "Effrayé" });
+    await page.goto("/etats/");
+    const link = page.locator(".results").getByRole("link", { name: "Effrayé", exact: true });
     await settleInView(link);
     await link.hover();
     const bubble = page.getByRole("tooltip");
@@ -38,8 +38,8 @@ test.describe("link previews", () => {
   });
 
   test("shows a preview on keyboard focus and hides it with Escape", async ({ page }) => {
-    await page.goto("/");
-    const link = page.getByRole("region", { name: "États" }).getByRole("link", { name: "Effrayé" });
+    await page.goto("/etats/");
+    const link = page.locator(".results").getByRole("link", { name: "Effrayé", exact: true });
     await settleInView(link);
     await link.focus();
     const bubble = page.getByRole("tooltip");
