@@ -12,6 +12,17 @@ npm run build && npm run preview   # site complet avec la recherche Pagefind
 npm test
 ```
 
+## Tests
+
+| Commande | Ce qu'elle vérifie |
+| --- | --- |
+| `npm run check` | Types TypeScript des fichiers `.ts`, `.tsx` et `.astro` (`astro check`). |
+| `npm test` | Tests unitaires Vitest (`tests/`) : import, utilitaires du site, et intégrité des données de `src/data/` (identifiants uniques, aucun HTML dangereux, aucun lien interne cassé). |
+| `npm run test:e2e` | Tests Playwright (`e2e/`) sur le site construit : navigation, listes filtrables, recherche Pagefind, aperçus, affichage mobile et accessibilité (axe, thèmes clair et sombre). Lancer `npm run build` avant, et `npx playwright install chromium` la première fois. |
+| `npm run verify` | Tout ce qui précède, dans l'ordre : à lancer avant de pousser. |
+
+La CI (`.github/workflows/ci.yml`) lance `npm audit` puis ces mêmes étapes sur chaque pull request vers `main` (hors brouillons et modifications de Markdown seules).
+
 Variantes de l'import :
 
 - `npm run import:no-translate` : sans appel au modèle, seules les traductions déjà en cache sont utilisées.
