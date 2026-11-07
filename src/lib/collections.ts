@@ -22,7 +22,7 @@ export interface CollectionDef {
   noun: string;
   intro: string;
   facets: FacetDef[];
-  /** Shown in the main navigation. */
+  /** Shortcut in the header, beside the mega menu (wide screens). */
   nav?: boolean;
 }
 
@@ -30,18 +30,18 @@ const RARITY: FacetDef = { key: "rarity", label: "Rareté", order: ["Commun", "P
 const LEVEL: FacetDef = { key: "level", label: "Niveau", numeric: true };
 
 export const COLLECTIONS: CollectionDef[] = [
-  { name: "ancestries", path: "ascendances", title: "Ascendances", noun: "ascendances", nav: true, intro: "Les peuples jouables, leurs héritages et leurs dons.", facets: [RARITY] },
+  { name: "ancestries", path: "ascendances", title: "Ascendances", noun: "ascendances", intro: "Les peuples jouables, leurs héritages et leurs dons.", facets: [RARITY] },
   { name: "heritages", path: "heritages", title: "Héritages", noun: "héritages", intro: "Les variantes de chaque ascendance et les héritages polyvalents.", facets: [{ key: "ancestry", label: "Ascendance" }, RARITY] },
   { name: "backgrounds", path: "historiques", title: "Historiques", noun: "historiques", intro: "Ce que faisait votre personnage avant l'aventure.", facets: [{ key: "skill", label: "Compétence" }, RARITY] },
   { name: "classes", path: "classes", title: "Classes", noun: "classes", nav: true, intro: "Les classes, leurs aptitudes et leurs dons.", facets: [{ key: "attribute", label: "Caractéristique principale" }, RARITY] },
   { name: "classFeatures", path: "aptitudes", title: "Aptitudes de classe", noun: "aptitudes", intro: "Les aptitudes accordées par les classes.", facets: [LEVEL] },
   { name: "feats", path: "dons", title: "Dons", noun: "dons", nav: true, intro: "Dons d'ascendance, de classe, généraux, de compétence et d'archétype.", facets: [{ key: "category", label: "Catégorie" }, LEVEL, { key: "trait", label: "Traits" }, RARITY] },
-  { name: "skills", path: "competences", title: "Compétences", noun: "compétences", nav: true, intro: "Chaque compétence, ses actions et ses dons.", facets: [{ key: "attribute", label: "Caractéristique" }] },
+  { name: "skills", path: "competences", title: "Compétences", noun: "compétences", intro: "Chaque compétence, ses actions et ses dons.", facets: [{ key: "attribute", label: "Caractéristique" }] },
   { name: "spells", path: "sorts", title: "Sorts", noun: "sorts", nav: true, intro: "Par rang, tradition et type : tours de magie, sorts focalisés, rituels.", facets: [{ key: "type", label: "Type", order: ["Sort", "Tour de magie", "Focalisé", "Rituel"] }, { key: "rank", label: "Rang", numeric: true }, { key: "tradition", label: "Tradition" }, RARITY] },
   { name: "equipment", path: "equipement", title: "Équipement", noun: "objets", nav: true, intro: "Armes, armures, boucliers, consommables et objets magiques.", facets: [{ key: "type", label: "Type" }, LEVEL, { key: "group", label: "Groupe" }, RARITY] },
   { name: "deities", path: "divinites", title: "Divinités", noun: "divinités", intro: "Dieux et philosophies, leurs domaines et leurs sorts.", facets: [{ key: "category", label: "Catégorie" }, { key: "font", label: "Source divine" }] },
-  { name: "actions", path: "actions", title: "Actions", noun: "actions", nav: true, intro: "Actions de base, de compétence, d'exploration et d'intermède.", facets: [{ key: "category", label: "Catégorie" }, { key: "type", label: "Type", order: ["Action", "Réaction", "Action gratuite", "Activité"] }, RARITY] },
-  { name: "conditions", path: "etats", title: "États", noun: "états", nav: true, intro: "Effrayé, agrippé, ralenti… les effets à garder sous la main en partie.", facets: [] },
+  { name: "actions", path: "actions", title: "Actions", noun: "actions", intro: "Actions de base, de compétence, d'exploration et d'intermède.", facets: [{ key: "category", label: "Catégorie" }, { key: "type", label: "Type", order: ["Action", "Réaction", "Action gratuite", "Activité"] }, RARITY] },
+  { name: "conditions", path: "etats", title: "États", noun: "états", intro: "Effrayé, agrippé, ralenti… les effets à garder sous la main en partie.", facets: [] },
   { name: "archetypes", path: "archetypes", title: "Archétypes", noun: "archétypes", intro: "Les archétypes et les dons qu'ils ouvrent.", facets: [RARITY] },
   { name: "domains", path: "domaines", title: "Domaines divins", noun: "domaines", intro: "Les domaines des divinités et leurs sorts.", facets: [] },
   { name: "creatures", path: "creatures", title: "Créatures", noun: "créatures", nav: true, intro: "Les créatures du Livre des monstres et les PNJ.", facets: [{ key: "type", label: "Type" }, LEVEL, { key: "size", label: "Taille", order: ["Très petite", "Petite", "Moyenne", "Grande", "Très grande", "Gigantesque"] }, RARITY] },
