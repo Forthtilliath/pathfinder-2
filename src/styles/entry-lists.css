@@ -1,0 +1,133 @@
+/* ------------------------------------------------------------------ */
+/* Lists shown under an entry: progression table, related entries      */
+/* ------------------------------------------------------------------ */
+
+.related,
+.progression {
+  max-width: 44rem;
+  margin-top: 2rem;
+  scroll-margin-top: 4.5rem;
+}
+
+:is(.related, .progression) h2 {
+  font-size: var(--step-1);
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  margin-bottom: 0.6rem;
+}
+
+/* Plain list: two columns, the type right after the name (no gap to jump across). */
+.related-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  columns: 2 16rem;
+  column-gap: 2rem;
+}
+
+.related-list li {
+  break-inside: avoid;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid var(--rule);
+  line-height: 1.4;
+}
+
+.related-list .subtitle {
+  margin-left: 0.35rem;
+  white-space: normal;
+}
+
+/* By level: one row per level, the entries flow on the line. */
+.by-level {
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.by-level > div,
+.progression tr {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.by-level dt,
+.progression th[scope="row"] {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+  text-align: left;
+}
+
+.by-level dd {
+  margin: 0;
+}
+
+:is(.by-level, .progression) ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0;
+}
+
+:is(.by-level, .related-list) .cost-glyph {
+  margin-left: 0.3em;
+}
+
+/* Items separated by a middle dot, kept with the next item. */
+:is(.by-level, .progression) li:not(:last-child)::after {
+  content: "·";
+  margin: 0 0.6rem;
+  color: var(--ink-muted);
+}
+
+.progression table {
+  display: block;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.progression :is(thead, tbody) {
+  display: block;
+}
+
+.progression thead tr {
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  border-bottom: 2px solid var(--ink);
+  padding-block: 0 0.3rem;
+}
+
+.progression thead th {
+  text-align: left;
+  font-weight: 700;
+}
+
+.progression tbody tr:nth-child(odd) {
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+
+.progression td {
+  padding: 0;
+}
+
+/* Class features stand out from the generic steps (feats, boosts…). */
+.progression li[data-feature] a {
+  font-weight: 700;
+}
+
+.progression li:not([data-feature]) {
+  color: var(--ink-muted);
+}
+
+.progression li:not([data-feature]) a {
+  color: inherit;
+}

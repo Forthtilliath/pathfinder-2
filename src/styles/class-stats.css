@@ -1,0 +1,158 @@
+/* ------------------------------------------------------------------ */
+/* Class page: key figures and proficiencies                           */
+/* ------------------------------------------------------------------ */
+
+.class-stats {
+  margin-top: 0.9rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+
+.class-stats dl {
+  margin: 0;
+}
+
+.class-stats dt {
+  font-size: var(--step--1);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+}
+
+.class-stats dd {
+  margin: 0;
+}
+
+/* Three tiles: key attribute, hit points, perception. */
+.key-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.6rem;
+}
+
+.key-figures > div {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--trait);
+  border-radius: 4px;
+  padding: 0.55rem 0.8rem 0.65rem;
+}
+
+.key-figures dd {
+  margin-top: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.45rem;
+}
+
+.figure {
+  font-family: var(--serif);
+  font-size: var(--step-2);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.figure-note {
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  line-height: 1.3;
+}
+
+/* Proficiencies: label column, items with their rank badge. */
+.proficiencies {
+  margin-top: 0.9rem !important;
+}
+
+.proficiencies > div {
+  display: grid;
+  grid-template-columns: 10.5rem 1fr;
+  gap: 0.25rem 1rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--rule);
+}
+
+.proficiencies dt {
+  padding-top: 0.2rem;
+}
+
+.proficiencies ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+}
+
+.proficiencies li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.rank {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.05rem 0.45rem;
+  border-radius: 3px;
+  border: 1px solid var(--rule);
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.key-figures .rank {
+  font-size: var(--step-0);
+  padding: 0.1rem 0.6rem;
+}
+
+.rank[data-rank="expert"] {
+  border-color: var(--rank-expert);
+  color: var(--rank-expert);
+}
+
+.rank[data-rank="maître"] {
+  border-color: var(--rank-master);
+  color: var(--rank-master);
+}
+
+.rank[data-rank="légendaire"] {
+  border-color: var(--rank-legendary);
+  color: var(--rank-legendary);
+}
+
+@media (max-width: 40rem) {
+  .proficiencies > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Extra chapter after the description (roleplaying a class). */
+.rule-text.chapter {
+  margin-top: 2rem;
+}
+
+.rule-text.chapter h2 {
+  font-size: var(--step-2);
+  margin-bottom: 0.5rem;
+}
+
+.rule-text.chapter h3 {
+  font-size: var(--step-1);
+  color: var(--trait);
+  margin: 1.1em 0 0.25em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .rule-text.chapter h3 {
+    color: var(--warning);
+  }
+}
+
+.rule-text.chapter li p {
+  margin: 0 0 0.3em;
+}

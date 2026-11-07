@@ -1,0 +1,103 @@
+/* ------------------------------------------------------------------ */
+/* Home                                                                */
+/* ------------------------------------------------------------------ */
+
+.home-hero {
+  max-width: 44rem;
+  padding-block: 2.5rem 3rem;
+}
+
+.home-hero h1 {
+  font-size: clamp(var(--step-3), 6vw, var(--step-5));
+  letter-spacing: -0.01em;
+  margin-bottom: 1.75rem;
+}
+
+.search-field {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: inherit;
+  font-size: var(--step-1);
+  color: var(--ink-muted);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--trait);
+  border-radius: 4px;
+  padding: 0.85rem 1rem;
+  cursor: text;
+  text-align: left;
+}
+
+.home-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  border-top: 1px solid var(--rule);
+}
+
+.home-section {
+  display: block;
+  padding: 1.25rem 1.25rem 1.5rem 0;
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.home-section h2 {
+  font-size: var(--step-2);
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.home-section:hover h2 {
+  color: var(--link);
+}
+
+.home-section p {
+  margin: 0.4rem 0 0;
+  color: var(--ink-muted);
+  max-width: 30ch;
+}
+
+.condition-shortcuts {
+  margin-top: 2.5rem;
+}
+
+.condition-shortcuts h2 {
+  font-size: var(--step-1);
+  margin-bottom: 0.75rem;
+}
+
+.condition-shortcuts ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--sans);
+}
+
+.condition-shortcuts a {
+  display: block;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.condition-shortcuts a:hover {
+  border-color: var(--link);
+  color: var(--link);
+}
+
+.updated-at {
+  margin-top: 3rem;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}

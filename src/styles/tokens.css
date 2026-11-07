@@ -1,0 +1,73 @@
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light dark;
+  --bg: #eceee8;
+  --surface: #f8f9f6;
+  --ink: #1c2321;
+  --ink-muted: #57615c;
+  --rule: #c9cec6;
+  --link: #1d5671;
+  --trait: #6b1d26;
+  --trait-ink: #f7f3ec;
+  /* Rarity, as in most games: common white/ink, uncommon green, rare blue, unique orange. */
+  --uncommon: #23772f;
+  --rare: #1a5fb4;
+  --unique: #ad4a00;
+  /* Badge backgrounds (light text on them), same in both schemes. */
+  --uncommon-bg: #23772f;
+  --rare-bg: #1a5fb4;
+  --unique-bg: #ad4a00;
+  /* Other accents: warnings and proficiency ranks. */
+  --warning: #9a4a2c;
+  --rank-expert: #1a5fb4;
+  --rank-master: #6a35a0;
+  --rank-legendary: #8a6100;
+  --roll-bg: #dfe5df;
+  --shadow: 0 8px 28px rgb(20 30 28 / 0.14);
+
+  --serif: "Alegreya", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+
+  --step--1: 0.85rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.563rem;
+  --step-3: 1.953rem;
+  --step-4: 2.441rem;
+  --step-5: 3.052rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141918;
+    --surface: #1b2120;
+    --ink: #e3e7e2;
+    --ink-muted: #9aa49f;
+    --rule: #33403c;
+    --link: #8ec3d9;
+    --trait: #8a2c36;
+    --trait-ink: #f7f0ee;
+    --uncommon: #6fd27c;
+    --rare: #78acff;
+    --unique: #ff9d45;
+    --warning: #e09371;
+    --rank-expert: #78acff;
+    --rank-master: #c6a1ec;
+    --rank-legendary: #f2c94c;
+    --roll-bg: #26302d;
+    --shadow: 0 8px 28px rgb(0 0 0 / 0.5);
+  }
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

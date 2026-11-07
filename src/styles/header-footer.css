@@ -1,0 +1,90 @@
+/* ------------------------------------------------------------------ */
+/* Header and footer                                                   */
+/* ------------------------------------------------------------------ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.6rem max(1rem, (100% - 72rem) / 2);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  /* Kept out of the page cross-fade: the header stays still between pages. */
+  view-transition-name: site-header;
+}
+
+.brand {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: var(--step-1);
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand span {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-muted);
+}
+
+.site-header nav {
+  display: flex;
+  gap: 1.1rem;
+  overflow-x: auto;
+}
+
+.site-header nav a {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+  padding-block: 0.2rem;
+  border-bottom: 2px solid transparent;
+}
+
+.site-header nav a[aria-current="page"],
+.site-header nav a:hover {
+  border-bottom-color: var(--trait);
+}
+
+.search-button {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font: inherit;
+  color: var(--ink-muted);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+@media (max-width: 40rem) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .site-header nav {
+    order: 3;
+    width: 100%;
+  }
+  .search-button span,
+  .search-button kbd {
+    display: none;
+  }
+}
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem max(1rem, (100% - 72rem) / 2);
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}

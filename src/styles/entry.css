@@ -1,0 +1,260 @@
+/* ------------------------------------------------------------------ */
+/* Entry page (stat block)                                             */
+/* ------------------------------------------------------------------ */
+
+.entry,
+.source-notes,
+.trait-bearers,
+.text-page {
+  max-width: 44rem;
+}
+
+.entry-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.entry-header h1 {
+  font-size: clamp(var(--step-3), 5vw, var(--step-4));
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.entry-header h1 .cost-glyph {
+  font-size: 0.7em;
+}
+
+.entry-type {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: var(--step-1);
+}
+
+.review-badge {
+  width: 100%;
+  margin: 0.25rem 0 0;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+}
+
+.review-badge a {
+  color: var(--warning);
+}
+
+.trait-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.trait {
+  background: var(--trait);
+  color: var(--trait-ink);
+  border-radius: 2px;
+  line-height: 1.5;
+}
+
+.trait a {
+  display: block;
+  padding: 0 0.5rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.trait a:hover {
+  text-decoration: underline;
+}
+
+.trait[data-rarity] {
+  padding: 0 0.5rem;
+}
+
+.trait[data-rarity="uncommon"] {
+  background: var(--uncommon-bg);
+}
+
+.trait[data-rarity="rare"] {
+  background: var(--rare-bg);
+}
+
+.trait[data-rarity="unique"] {
+  background: var(--unique-bg);
+}
+
+.properties {
+  margin: 0.75rem 0 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.25rem;
+}
+
+.properties > div {
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+}
+
+.properties dt {
+  font-weight: 700;
+}
+
+.properties dd {
+  margin: 0;
+}
+
+.rule-text {
+  margin-top: 1rem;
+  line-height: 1.65;
+}
+
+.rule-text p {
+  margin: 0 0 0.85em;
+}
+
+.rule-text hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 1rem 0;
+}
+
+.rule-text ul,
+.rule-text ol {
+  margin: 0 0 0.85em;
+  padding-left: 1.25rem;
+}
+
+/* Tailwind's reset removes list markers. */
+.rule-text ul {
+  list-style: disc;
+}
+
+.rule-text ol {
+  list-style: decimal;
+}
+
+.rule-text :is(h2, h3, h4) {
+  margin: 1.5em 0 0.35em;
+}
+
+.rule-text h2 {
+  font-size: var(--step-1);
+}
+
+.rule-text h3,
+.rule-text h4 {
+  font-size: var(--step-0);
+}
+
+.rule-text > :first-child,
+.rule-text hr + :is(h2, h3, h4) {
+  margin-top: 0;
+}
+
+.rule-text table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+}
+
+.rule-text th,
+.rule-text td {
+  border: 1px solid var(--rule);
+  padding: 0.25rem 0.5rem;
+  text-align: left;
+}
+
+.roll {
+  font-family: var(--sans);
+  font-weight: 500;
+  background: var(--roll-bg);
+  border-radius: 3px;
+  padding: 0 0.3em;
+  white-space: nowrap;
+}
+
+.cost-glyph {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  vertical-align: -0.1em;
+}
+
+.cost-glyph-sep {
+  font-family: var(--sans);
+  font-size: 0.8em;
+}
+
+.cost-glyph-text {
+  font-family: var(--sans);
+  letter-spacing: -0.1em;
+}
+
+.source-notes {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+.source-notes h2 {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+.source-notes ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.source-fields {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.trait-bearers {
+  margin-top: 2rem;
+}
+
+.trait-bearers h2 {
+  font-size: var(--step-1);
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.trait-bearers ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  columns: 2 16rem;
+}
+
+.trait-bearers li {
+  break-inside: avoid;
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+  padding-block: 0.1rem;
+}

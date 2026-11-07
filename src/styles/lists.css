@@ -1,0 +1,211 @@
+/* ------------------------------------------------------------------ */
+/* Lists                                                               */
+/* ------------------------------------------------------------------ */
+
+.list-page h1,
+.text-page h1 {
+  font-size: var(--step-4);
+  margin-bottom: 1.25rem;
+}
+
+.list-tools {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filter-field {
+  flex: 1;
+  max-width: 32rem;
+}
+
+.filter-field input {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+}
+
+.filters-toggle {
+  display: none;
+  font: inherit;
+  font-family: var(--sans);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0 0.9rem;
+}
+
+.list-body {
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.facets {
+  position: sticky;
+  top: 4.5rem;
+  font-family: var(--sans);
+}
+
+.facets fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.1rem;
+}
+
+.facets legend {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.facet-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.facet-options button,
+.clear-filters {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.05rem 0.5rem;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+
+.facet-options button[aria-pressed="true"] {
+  background: var(--trait);
+  border-color: var(--trait);
+  color: var(--trait-ink);
+}
+
+.clear-filters {
+  color: var(--link);
+}
+
+.result-count {
+  margin: 0 0 0.5rem;
+  font-family: var(--sans);
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+}
+
+.empty-state {
+  color: var(--ink-muted);
+}
+
+.results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  columns: 2 18rem;
+  column-gap: 2rem;
+}
+
+.results li {
+  break-inside: avoid;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.results li a {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.results li a:hover .entry-name {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+.entry-name[data-rarity="uncommon"] {
+  color: var(--uncommon);
+}
+.entry-name[data-rarity="rare"] {
+  color: var(--rare);
+}
+.entry-name[data-rarity="unique"] {
+  color: var(--unique);
+}
+
+.subtitle {
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 48rem) {
+  .filters-toggle {
+    display: block;
+  }
+  .list-body {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .facets {
+    position: static;
+    display: none;
+  }
+  .facets[data-open="true"] {
+    display: block;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+}
+
+.condition-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 0 2rem;
+}
+
+.condition-grid li {
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.condition-grid a {
+  font-weight: 700;
+  font-size: var(--step-1);
+}
+
+.condition-grid p {
+  margin: 0.2rem 0 0;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+.trait-columns {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  columns: 4 12rem;
+}
+
+.trait-columns li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+  break-inside: avoid;
+}

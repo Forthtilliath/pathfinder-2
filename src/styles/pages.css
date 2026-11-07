@@ -1,0 +1,154 @@
+/* ------------------------------------------------------------------ */
+/* Text pages                                                          */
+/* ------------------------------------------------------------------ */
+
+.text-page h2 {
+  font-size: var(--step-2);
+  margin: 2rem 0 0.6rem;
+}
+
+.text-page p {
+  margin: 0 0 0.9em;
+}
+
+.credits div {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.credits dt {
+  font-weight: 700;
+}
+
+.credits dd {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Preview and search                                                  */
+/* ------------------------------------------------------------------ */
+
+.preview {
+  position: fixed;
+  z-index: 40;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--trait);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  padding: 0.6rem 0.85rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.preview p {
+  margin: 0;
+}
+
+.preview .preview-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.preview-title span {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+
+dialog.search-dialog {
+  width: min(42rem, 100% - 1.5rem);
+  max-height: 80dvh;
+  margin: 8dvh auto auto;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  --pagefind-ui-primary: var(--link);
+  --pagefind-ui-text: var(--ink);
+  --pagefind-ui-background: var(--surface);
+  --pagefind-ui-border: var(--rule);
+  --pagefind-ui-tag: var(--roll-bg);
+  --pagefind-ui-font: var(--serif);
+  --pagefind-ui-border-radius: 4px;
+}
+
+dialog.search-dialog::backdrop {
+  background: rgb(10 15 14 / 0.45);
+}
+
+.search-close {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.25rem;
+}
+
+.search-close button {
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.search-unavailable {
+  font-family: var(--sans);
+  color: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Additions: list intro, load more, related groups                   */
+/* ------------------------------------------------------------------ */
+
+.list-intro {
+  margin: -0.75rem 0 1.25rem;
+  color: var(--ink-muted);
+  max-width: 44rem;
+}
+
+.list-body.no-facets {
+  grid-template-columns: 1fr;
+}
+
+.load-more {
+  margin-top: 1rem;
+  font: inherit;
+  font-family: var(--sans);
+  color: var(--link);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+}
+
+.site-header nav {
+  scrollbar-width: none;
+}
+
+.site-header nav a {
+  white-space: nowrap;
+}
+
+.stat-sections {
+  margin-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.stat-section {
+  margin: 0.35rem 0;
+  line-height: 1.6;
+}
+
+.stat-section p {
+  display: inline;
+  margin: 0;
+}
