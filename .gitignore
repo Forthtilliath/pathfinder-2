@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.cache/
+.env
+.env.*
+
+# Markdown: only README and CHANGELOG are tracked
+*.md
+!README.md
+!CHANGELOG.md
