@@ -52,6 +52,13 @@ describe("imported data", () => {
     expect(offenders).toEqual([]);
   });
 
+  // The book PDFs carry their buyer's e-mail and order number on every page: never on the site.
+  it("contains no e-mail address or order number", () => {
+    const personal = /[\w.+-]+@[\w-]+\.[a-z]{2,}|\b\d{6}\/\d{6,8}\/\d{6,8}\b/i;
+    const offenders = all.filter((e) => strings(e).some((s) => personal.test(s.replace(/href="mailto:[^"]*"/g, "")))).map((e) => `${e.collection}/${e.id}`);
+    expect(offenders).toEqual([]);
+  });
+
   it("only links to pages that exist", () => {
     const broken = new Set<string>();
     for (const e of all) {
