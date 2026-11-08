@@ -8,6 +8,7 @@
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { CACHE_DIR } from "../config.ts";
+import type { Figure } from "./config.ts";
 
 export interface Fragment {
   /** Text. */
@@ -42,7 +43,14 @@ export const PERSONAL_DATA = /[\w.+-]+@[\w-]+\.[a-z]{2,}|\b\d{6}\/\d{6,8}\/\d{6,
 /** The watermark line: tiny Helvetica at the very bottom of the page, or anything carrying personal data. */
 export const isWatermark = (f: Fragment) => (f.s < 4 && f.y < 15) || PERSONAL_DATA.test(f.t);
 
-const BOOKS_CACHE = path.join(path.dirname(CACHE_DIR), "books");
+/** The text of a book without the labels of its maps and diagrams. */
+export function withoutFigures(text: BookText, figures: Figure[]): BookText {
+  const isLabel = (n: number, f: Fragment) =>
+    figures.some((fig) => fig.page === n && (!fig.font || (fig.font.test(f.f) && (!fig.sizes || fig.sizes.includes(f.s)))));
+  return { ...text, pages: text.pages.map((page, i) => page.filter((f) => !isLabel(i + 1, f))) };
+}
+
+const BOOKS_CACHE =path.join(path.dirname(CACHE_DIR), "books");
 const round = (n: number) => Math.round(n * 10) / 10;
 
 async function parse(file: string): Promise<BookText> {
