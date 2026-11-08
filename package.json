@@ -42,6 +42,7 @@
     "eslint-plugin-astro": "^3.2.1",
     "globals": "^16.5.0",
     "pagefind": "^1.6.0",
+    "pdfjs-dist": "^4.10.38",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
     "sanitize-html": "^2.18.1",
