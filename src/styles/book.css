@@ -1,0 +1,73 @@
+/* ------------------------------------------------------------------ */
+/* Pages of the French books (Livre des joueurs, Livre du MJ)          */
+/* Classes are prefixed with book-: the import keeps no other class.   */
+/* ------------------------------------------------------------------ */
+
+/* Fiction opening a section. */
+.rule-text .book-fiction {
+  margin: 0 0 1.25em;
+  padding-left: 1rem;
+  border-left: 3px solid var(--trait);
+  font-style: italic;
+  color: var(--ink-muted);
+}
+
+/* Sidebars and stat blocks of the book: one box for consecutive paragraphs. */
+.rule-text .book-aside {
+  margin: 0;
+  padding: 0.35em 0.85em;
+  background: var(--surface);
+  border-left: 3px solid var(--rule);
+  font-family: var(--sans);
+}
+
+.rule-text ul.book-aside {
+  padding-left: 2rem;
+}
+
+.rule-text ul.book-aside li + li {
+  margin-top: 0.35em;
+}
+
+.rule-text .book-aside:not(:has(+ .book-aside)) {
+  margin-bottom: 0.85em;
+}
+
+.rule-text .book-stat-name {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--sans);
+}
+
+.rule-text .book-stat-type {
+  flex-shrink: 0;
+}
+
+.rule-text .book-stat-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0.35em 0;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.rule-text .book-trait {
+  padding: 0 0.5rem;
+  background: var(--trait);
+  color: var(--trait-ink);
+  border-radius: 2px;
+  line-height: 1.5;
+}
+
+/* Previous / table of contents / next, at the end of each page. */
+.rule-text .book-nav {
+  margin-top: 2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+}
