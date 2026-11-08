@@ -1,0 +1,175 @@
+/* ------------------------------------------------------------------ */
+/* Rules index (/regles/): books, chapters and pages in book order     */
+/* ------------------------------------------------------------------ */
+
+.rules-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+/* Wide screens: the table of contents is the left column, where a reader looks for a menu. */
+@media (min-width: 60rem) {
+  .rules-layout {
+    grid-template-columns: 13rem minmax(0, 1fr);
+    gap: 0 2.5rem;
+  }
+
+  .rules-layout .toc {
+    grid-column: 1;
+  }
+
+  .rules-main {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+/* Books stand out from their chapters in the side column. */
+.rules-layout .toc-level-2 {
+  margin-top: 0.6rem;
+}
+
+.rules-layout .toc-level-2 a {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.rules-layout .toc-level-2 a:hover,
+.rules-layout .toc-level-2 a[aria-current] {
+  color: var(--link);
+}
+
+/* Book */
+
+.rules-book {
+  margin-top: 1rem;
+}
+
+.rules-book + .rules-book {
+  margin-top: 3.5rem;
+}
+
+.rules-book-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--trait);
+}
+
+/* Paizo covers stay unmodified: resized only. */
+.rules-book-cover {
+  flex-shrink: 0;
+  width: 4rem;
+  height: auto;
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+}
+
+.rules-book-head h2 {
+  margin: 0;
+  font-size: var(--step-3);
+  line-height: 1.15;
+}
+
+.rules-book-meta {
+  margin: 0.2rem 0 0;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+/* Chapter */
+
+.rules-chapter {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.rules-chapter h3 {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 0.5rem;
+  font-size: var(--step-2);
+  line-height: 1.2;
+}
+
+.rules-kicker {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--icon);
+}
+
+.rules-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2 16rem;
+  column-gap: 2rem;
+}
+
+.rules-pages li {
+  break-inside: avoid;
+  padding: 0.15rem 0;
+}
+
+.rules-pages a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.rules-pages a:hover,
+.rules-pages a:focus-visible {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+/* Site catalogues of the chapter (spells, feats…). */
+.rules-catalogues {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0.75rem 0 0;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--ink-muted);
+}
+
+.rules-catalogues a {
+  padding: 0.05rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--link);
+  text-decoration: none;
+}
+
+.rules-catalogues a:hover {
+  border-color: var(--link);
+}
+
+.rules-count {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.rules-main .result-count:empty {
+  display: none;
+}
+
+/* A button that reads as a link (opens the site search). */
+.link-button {
+  font: inherit;
+  color: var(--link);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
