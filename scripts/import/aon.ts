@@ -129,7 +129,8 @@ async function load(category: string, offline: boolean, warn: Warn): Promise<Aon
 
 const rarityOf = (d: AonDoc) => (["uncommon", "rare", "unique"].includes(String(d.rarity).toLowerCase()) ? String(d.rarity).toLowerCase() : "common");
 
-export async function readAon(offline: boolean, warn: Warn): Promise<ExtraSource[]> {
+/** `fromBooks`: publications whose rules chapters come from their French book (books/), not from here. */
+export async function readAon(offline: boolean, warn: Warn, fromBooks: Set<string> = new Set()): Promise<ExtraSource[]> {
   const out: ExtraSource[] = [];
   const add = (collection: ExtraSource["collection"], pack: string, d: AonDoc, book: string, html: string, adapter: ExtraSource["adapter"], extra: Partial<ExtraSource> = {}, system: Record<string, unknown> = {}) => {
     if (!html) return;
@@ -145,7 +146,7 @@ export async function readAon(offline: boolean, warn: Warn): Promise<ExtraSource
 
   for (const d of await load("rules", offline, warn)) {
     const book = coreBook(d);
-    if (book) add("rules", "aon-rules", d, book, aonToHtml(d.markdown ?? d.text ?? ""), simpleAdapter("Règle", { book: [`⟪book:${book}⟫`] }));
+    if (book && !fromBooks.has(book)) add("rules", "aon-rules", d, book, aonToHtml(d.markdown ?? d.text ?? ""), simpleAdapter("Règle", { book: [`⟪book:${book}⟫`] }));
   }
 
   for (const d of await load("plane", offline, warn)) {

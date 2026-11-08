@@ -68,6 +68,8 @@ export interface Draft {
   extraTraits?: string[];
   name?: string;
   id?: string;
+  /** Suffix used when the id is taken: such drafts get their id after the others. */
+  idSuffix?: string;
 }
 
 export interface Labels {
