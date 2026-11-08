@@ -1,0 +1,37 @@
+---
+import RulesBook from "./RulesBook.astro";
+import TableOfContents from "./TableOfContents.astro";
+import { entries } from "../lib/data";
+import { rulesIndex, ruleSource } from "../lib/rules-index";
+import type { TocHeading } from "../lib/toc";
+
+// A table of contents, not a filtered list: the side column holds links to the books and chapters below.
+const books = rulesIndex(entries("rules").map(ruleSource));
+const toc: TocHeading[] = books.flatMap((b) => [
+  { id: b.anchor, text: b.name, level: 2 as const },
+  ...b.chapters.map((c) => ({ id: c.anchor, text: c.kicker ? `${c.kicker.replace("Chapitre ", "")}. ${c.title}` : c.title, level: 3 as const })),
+]);
+---
+
+<div class="rules-layout">
+  <TableOfContents headings={toc} />
+  <div class="rules-main">
+    <div class="list-tools">
+      <label class="filter-field">
+        <span class="visually-hidden">Chercher une page de règles</span>
+        <input type="search" placeholder="Chercher une page ou un chapitre…" autocomplete="off" data-rules-filter />
+      </label>
+    </div>
+    <p class="result-count" aria-live="polite" data-rules-count></p>
+    <p class="empty-state" data-rules-empty hidden>
+      Aucun titre ne correspond. Raccourcissez la recherche, ou cherchez dans le texte des règles avec
+      <button type="button" class="link-button" data-open-search>la recherche du site</button>.
+    </p>
+    {books.map((b) => <RulesBook book={b} />)}
+  </div>
+</div>
+
+<script>
+  import "../client/toc";
+  import "../client/rules-filter";
+</script>

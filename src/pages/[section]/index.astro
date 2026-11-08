@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FilterableList, { type FacetOptions } from "../../components/FilterableList";
+import RulesIndex from "../../components/RulesIndex.astro";
 import { COLLECTION_BY_NAME, COLLECTIONS, compareFacetValues, VIEWS, type FacetDef } from "../../lib/collections";
 import { listItem, listRows } from "../../lib/data";
 import type { CollectionName } from "../../lib/types";
@@ -52,15 +53,21 @@ const facets: FacetOptions[] = page.facets.map((f) => {
   <div class="list-page">
     <h1>{page.title}</h1>
     <p class="list-intro">{page.intro}</p>
-    <FilterableList
-      client:load
-      allRows={complete ? rows : undefined}
-      initialItems={complete ? [] : rows.slice(0, INITIAL).map(listItem)}
-      total={rows.length}
-      dataUrl={`/listes/${page.path}.json`}
-      basePath={COLLECTION_BY_NAME[page.base].path}
-      facets={facets}
-      noun={page.noun}
-    />
+    {
+      page.base === "rules" && !page.filter ? (
+        <RulesIndex />
+      ) : (
+        <FilterableList
+          client:load
+          allRows={complete ? rows : undefined}
+          initialItems={complete ? [] : rows.slice(0, INITIAL).map(listItem)}
+          total={rows.length}
+          dataUrl={`/listes/${page.path}.json`}
+          basePath={COLLECTION_BY_NAME[page.base].path}
+          facets={facets}
+          noun={page.noun}
+        />
+      )
+    }
   </div>
 </BaseLayout>

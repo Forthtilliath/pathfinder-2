@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import { CORE_BOOKS } from "../lib/books";
+import { pageCount } from "../lib/data";
+import type { RulesBook } from "../lib/rules-index";
+
+interface Props {
+  book: RulesBook;
+}
+
+const { book } = Astro.props;
+const cover = CORE_BOOKS.find((b) => b.name === book.name);
+const isScreen = book.indexPages.length > 0;
+const plural = (n: number, one: string, many: string) => `${n.toLocaleString("fr-FR")} ${n > 1 ? many : one}`;
+const meta = [plural(book.pageCount, "page", "pages"), plural(book.chapters.length, isScreen ? "thème" : "chapitre", isScreen ? "thèmes" : "chapitres")];
+---
+
+<section class="rules-book" data-rules-book>
+  <header class="rules-book-head">
+    {
+      cover && (
+        <Image src={cover.cover} alt="" widths={[96, 192]} sizes="4rem" loading="lazy" class="rules-book-cover" />
+      )
+    }
+    <div>
+      <h2 id={book.anchor}>{book.name}</h2>
+      <p class="rules-book-meta">
+        {cover && <i lang="en">{cover.english}</i>}
+        {cover && " · "}
+        {meta.join(" · ")}
+      </p>
+      {
+        isScreen && (
+          <p class="rules-book-meta">
+            Vue tableau :{" "}
+            {book.indexPages.map((p, i) => (
+              <>
+                {i > 0 && " · "}
+                <a href={`/regles/${p.id}/`} data-preview={`regles/${p.id}`}>
+                  {p.name}
+                </a>
+              </>
+            ))}
+          </p>
+        )
+      }
+    </div>
+  </header>
+
+  {
+    book.chapters.map((c) => (
+      <section class="rules-chapter" data-rules-chapter data-search={c.search}>
+        <h3 id={c.anchor}>
+          {c.kicker && <span class="rules-kicker">{c.kicker}</span>}
+          <span>{c.title}</span>
+        </h3>
+        {c.pages.length > 0 && (
+          <ul class="rules-pages">
+            {c.pages.map((p) => (
+              <li data-search={p.search}>
+                <a href={`/regles/${p.id}/`} data-preview={`regles/${p.id}`}>
+                  {p.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+        {c.catalogues.length > 0 && (
+          <p class="rules-catalogues">
+            <span>{c.pages.length ? "Voir aussi les fiches :" : "Le contenu de ce chapitre est sur le site sous forme de fiches :"}</span>
+            {c.catalogues.map((l) => (
+              <a href={`/${l.path}/`}>
+                {l.label} <span class="rules-count">{pageCount(l.path).toLocaleString("fr-FR")}</span>
+              </a>
+            ))}
+          </p>
+        )}
+      </section>
+    ))
+  }
+</section>
