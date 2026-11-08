@@ -11,6 +11,7 @@ import TraitList from "../../components/TraitList.astro";
 import { COLLECTIONS, COLLECTION_BY_NAME } from "../../lib/collections";
 import { entries, entryTexts, hasUnreviewedTranslation, plainText } from "../../lib/data";
 import { relatedGroups } from "../../lib/related";
+import { rulesTrail, ruleSource } from "../../lib/rules-index";
 import { addHeadingIds, type TocHeading } from "../../lib/toc";
 import type { Entry } from "../../lib/types";
 
@@ -25,6 +26,8 @@ const texts = entryTexts(entry);
 const description = plainText(entry.description.value).slice(0, 160) || `${entry.subtitle} — ${entry.name.value}`;
 const collection = COLLECTION_BY_NAME[entry.collection];
 const isClass = entry.collection === "classes";
+// Rules pages: their book and chapter in the rules table of contents.
+const trail = entry.collection === "rules" ? rulesTrail(ruleSource(entry)) : [];
 
 // Anchors for the table of contents, computed server-side so the rendered
 // headings carry ids (deep links and SEO, no client-side re-layout).
@@ -48,6 +51,14 @@ const hasToc = toc.length >= 3;
     <span aria-hidden="true">›</span>
     <a href={`/${collection.path}/`}>{collection.title}</a>
     <span aria-hidden="true">›</span>
+    {
+      trail.map((t) => (
+        <>
+          <a href={t.href}>{t.label}</a>
+          <span aria-hidden="true">›</span>
+        </>
+      ))
+    }
     <span aria-current="page">{entry.name.value}</span>
   </nav>
   <div class={hasToc ? "entry-layout has-toc" : "entry-layout"}>
