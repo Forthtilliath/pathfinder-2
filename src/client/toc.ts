@@ -39,7 +39,8 @@ if (nav && details) {
     const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
     let index = -1;
     if (atBottom) index = targets.length - 1;
-    else targets.forEach((t, i) => t && t.getBoundingClientRect().top <= line() && (index = i));
+    // A hidden target (rules index narrowed by a search) has no box: it is never the section being read.
+    else targets.forEach((t, i) => t && t.getClientRects().length && t.getBoundingClientRect().top <= line() && (index = i));
     const link = links[index] ?? null;
     if (link === active) return;
     active?.removeAttribute("aria-current");
