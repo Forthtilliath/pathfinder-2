@@ -41,5 +41,6 @@ test("menu opens below the header, fits the screen and closes", async ({ page })
 
 test("search button keeps its name when only the icon shows", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("button", { name: "Rechercher" })).toBeVisible();
+  // The header button (the footer has its own "Rechercher" link).
+  await expect(page.locator(".site-header").getByRole("button", { name: "Rechercher" })).toBeVisible();
 });
