@@ -7,15 +7,18 @@ import { slugify } from "./rules.ts";
 import { SKILL_ATTRIBUTES, STATISTICS } from "./terms.ts";
 import type { TraitPages } from "./trait-pages.ts";
 
-/** Gives each draft its French name and a slug id, unique within its collection. Sorts `kept` by Foundry id first, for stable ids. */
+/**
+ * Gives each draft its French name and a slug id, unique within its collection. Sorts `kept` by Foundry id first,
+ * for stable ids; drafts with an id suffix (book pages) come last, so existing addresses do not change.
+ */
 export function assignIds(kept: Draft[]) {
   const takenIds = new Map<CollectionName, Set<string>>();
-  for (const d of kept.sort((a, z) => a.doc._id.localeCompare(z.doc._id))) {
+  for (const d of kept.sort((a, z) => Number(!!a.idSuffix) - Number(!!z.idSuffix) || a.doc._id.localeCompare(z.doc._id))) {
     const taken = takenIds.get(d.collection) ?? new Set<string>();
     takenIds.set(d.collection, taken);
     d.name = d.fields.get("name")!.french!.value;
     let id = slugify(d.name) || d.doc._id.toLowerCase();
-    if (taken.has(id)) id = `${id}-${d.doc._id.slice(0, 4).toLowerCase()}`;
+    if (taken.has(id)) id = d.idSuffix && !taken.has(`${id}-${d.idSuffix}`) ? `${id}-${d.idSuffix}` : `${id}-${d.doc._id.slice(0, 4).toLowerCase()}`;
     taken.add(id);
     d.id = id;
   }

@@ -9,7 +9,7 @@
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
-import type { CollectionName } from "../../src/lib/types.ts";
+import type { CollectionName, Provenance } from "../../src/lib/types.ts";
 import type { Adapter, FoundryDoc } from "./adapters.ts";
 import { readTranslationFile } from "./pathfinder-fr.ts";
 
@@ -25,6 +25,10 @@ export interface ExtraSource {
   nameKey?: string;
   /** Applied to the English and French descriptions (relative links, heading levels). */
   transform?: (html: string) => string;
+  /** Text already in French (a French book): nothing to translate. */
+  french?: { name: string; description: string; provenance: Provenance };
+  /** Added to the id when another entry has it already (that entry keeps its address). */
+  idSuffix?: string;
 }
 
 export const extraDoc = (id: string, name: string, description: string, title: string, extra: Record<string, unknown> = {}): FoundryDoc => ({

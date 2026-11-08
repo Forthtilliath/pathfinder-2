@@ -189,7 +189,8 @@ export function enrich(text: string, ctx: RenderContext, depth = 0): string {
       .replace(/(<span class="roll">[^<]*dégâts[^<]*<\/span>)\s+(?:de\s+)?dégâts\b/g, "$1")
       .replace(/\b(?:de\s+)?dégâts\s+(<span class="roll">[^<]*dégâts)/g, "$1")
       .replace(/<p>\s*<\/p>/g, "")
-      .replace(/\s+class="[^"]*"/g, (m) => (/cost-glyph-text|roll/.test(m) ? m : ""))
+      // Foundry's own classes mean nothing here; the site's glyphs, rolls and book layout (book-*) are kept.
+      .replace(/\s+class="[^"]*"/g, (m) => (/cost-glyph-text|roll|\bbook-/.test(m) ? m : ""))
       .trim()
   );
 }

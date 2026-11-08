@@ -6,6 +6,7 @@ import path from "node:path";
 import type { CollectionName } from "../../src/lib/types.ts";
 import { PACKS, type Draft, type FoundryDoc, type Labels } from "./adapters.ts";
 import { readAon } from "./aon.ts";
+import { BBE, readBooks } from "./books/index.ts";
 import { attachClassJournals } from "./class-journal.ts";
 import { IMPORT_RULES } from "./config.ts";
 import { readCompanions, readJournals } from "./extra-sources.ts";
@@ -66,10 +67,22 @@ export async function readDrafts(src: DraftSources): Promise<{ drafts: Draft[]; 
     }
   }
   attachClassJournals(drafts, src.foundryDir, translations, translationProvenance);
-  const extras = [...readJournals(src.foundryDir), ...readCompanions(src.translationDir), ...(IMPORT_RULES ? await readAon(src.offline, src.warn) : [])];
+  const books = await readBooks(src.warn);
+  const extras = [
+    ...readJournals(src.foundryDir),
+    ...readCompanions(src.translationDir),
+    ...(IMPORT_RULES ? await readAon(src.offline, src.warn, books.publications) : []),
+    ...books.pages,
+  ];
   for (const x of extras) {
     const draft = addDraft(x.collection, x.pack, x.doc, x.folder, x.adapter);
     if (x.linkKeys) linkKeys.set(draft, x.linkKeys);
+    if (x.idSuffix) draft.idSuffix = x.idSuffix;
+    if (x.french) {
+      // Nothing to translate: no English text either, so no glossary entry is made from it.
+      draft.fields.set("name", { english: "", french: text(x.french.name, x.french.provenance) });
+      draft.fields.set("description", { english: "", french: text(x.french.description, x.french.provenance) });
+    }
     const name = draft.fields.get("name")!;
     const frenchName = x.nameKey ? frenchDict.get(x.nameKey) : undefined;
     if (!name.french && frenchName) name.french = text(frenchName, FR_LANGUAGE_FILE);
@@ -82,6 +95,13 @@ export async function readDrafts(src: DraftSources): Promise<{ drafts: Draft[]; 
     counts.set(x.collection, (counts.get(x.collection) ?? 0) + 1);
   }
   for (const [c, n] of counts) console.log(`   ${c}: ${n}`);
+
+  // Presentations from the books replace the short descriptions of their entries.
+  for (const d of books.descriptions) {
+    const target = drafts.find((x) => x.collection === d.collection && x.fields.get("name")?.french?.value === d.name);
+    if (target) target.fields.get("description")!.french = text(d.html, BBE);
+    else src.warn(`book presentation without entry: ${d.collection}/${d.name}`);
+  }
 
   // @Localize[key]: rendered from the French dictionary. A text made only of
   // such references needs no translation; a key missing in French is replaced
