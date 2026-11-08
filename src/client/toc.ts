@@ -48,13 +48,14 @@ if (nav && details) {
     if (link) reveal(link);
   }
 
-  // Fires whenever a heading crosses the reading line, or the footer comes fully into view (end of the page,
-  // where the last short sections never reach the line): no scroll listener.
+  // Fires whenever a heading crosses the reading line, or the bottom of the footer comes fully into view (end of
+  // the page, where the last short sections never reach the line): no scroll listener.
   // A percentage margin follows the window size (resizes, mobile toolbar).
   const observer = new IntersectionObserver(update, { rootMargin: `-${READING_LINE * 100}% 0px 0px 0px`, threshold: [0, 1] });
   // A related list is a tall <section>: its heading is what crosses the line.
   for (const t of targets) if (t) observer.observe(t.matches("h2, h3") ? t : (t.querySelector("h2") ?? t));
-  const footer = document.querySelector(".site-footer");
+  // Its last block only: the whole footer can be taller than the observed area on short windows.
+  const footer = document.querySelector(".footer-legal");
   if (footer) observer.observe(footer);
   // Jumps (anchor links, Home/End) can carry a heading past the line without crossing the observed area:
   // checked once the scroll has ended.
