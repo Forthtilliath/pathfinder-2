@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-07T19:06:06.414Z",
+  "date": "2026-11-08T00:36:40.973Z",
   "sources": [
     {
       "id": "foundry-pf2e",
@@ -15,7 +15,7 @@
       "url": "https://2e.aonprd.com/",
       "license": "ORC",
       "version": "index de recherche",
-      "commit": "20261107"
+      "commit": "20261108"
     },
     {
       "id": "pathfinder-fr",
@@ -36,7 +36,7 @@
     "classFeatures": 808,
     "actions": 480,
     "spells": 1562,
-    "rules": 56,
+    "rules": 166,
     "archetypes": 257,
     "heritages": 222,
     "backgrounds": 232,
@@ -51,8 +51,8 @@
     "traits": 479
   },
   "bySource": {
-    "pathfinder-fr": 14118,
-    "bbe": 944,
+    "pathfinder-fr": 14115,
+    "bbe": 1057,
     "site": 34,
     "foundry-pf2e": 0,
     "aon": 0
