@@ -4,7 +4,7 @@ import { BOOKS } from "../scripts/import/books/config.ts";
 import { blocksHtml, caseDictionary, normalCase } from "../scripts/import/books/html.ts";
 import { linkPageRefs } from "../scripts/import/books/index.ts";
 import { pageLines, runsText } from "../scripts/import/books/lines.ts";
-import { isWatermark, type BookText, type Fragment } from "../scripts/import/books/pdf-text.ts";
+import { isWatermark, withoutFigures, type BookText, type Fragment } from "../scripts/import/books/pdf-text.ts";
 import { cutBlocks, sectionLines, sectionsOf } from "../scripts/import/books/sections.ts";
 import { tableModel } from "../scripts/import/books/tables.ts";
 
@@ -37,6 +37,29 @@ describe("book page lines", () => {
       frag("Le texte.", 82, 600),
     ]);
     expect(lines.map((l) => runsText(l.runs))).toEqual(["Le texte."]);
+  });
+
+  it("reads once a text drawn twice at the same place", () => {
+    const label = frag("Irrisen", 192.5, 600, "GoodOT-Bold", 8);
+    expect(pageLines(1, [label, { ...label }]).map((l) => runsText(l.runs))).toEqual(["Irrisen"]);
+  });
+
+  it("joins the letters of a letter-spaced word, and only those", () => {
+    const lines = pageLines(1, [frag("a c c e s s i b l e s", 82, 700), frag("il y a à faire", 82, 689)]);
+    expect(lines.map((l) => runsText(l.runs))).toEqual(["accessibles", "il y a à faire"]);
+  });
+});
+
+describe("book figures", () => {
+  const text: BookText = {
+    watermarks: 0,
+    bookmarks: [],
+    pages: [[frag("Irrisen", 192, 700, "GoodOT-Bold", 8)], [frag("Azlant", 152, 640, "Taroca", 14), frag("AU-DELÀ", 82, 360, "Taroca", 15)]],
+  };
+
+  it("drops a map page, or only the labels of a figure", () => {
+    const out = withoutFigures(text, [{ page: 1 }, { page: 2, font: /^Taroca$/, sizes: [14] }]);
+    expect(out.pages.map((p) => p.map((f) => f.t))).toEqual([[], ["AU-DELÀ"]]);
   });
 });
 
