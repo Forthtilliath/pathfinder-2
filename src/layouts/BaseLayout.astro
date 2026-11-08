@@ -8,6 +8,7 @@ import serif400 from "@fontsource/alegreya/files/alegreya-latin-400-normal.woff2
 import serif700 from "@fontsource/alegreya/files/alegreya-latin-700-normal.woff2?url";
 import sans400 from "@fontsource/alegreya-sans/files/alegreya-sans-latin-400-normal.woff2?url";
 import sans500 from "@fontsource/alegreya-sans/files/alegreya-sans-latin-500-normal.woff2?url";
+import SiteFooter from "../components/SiteFooter.astro";
 import SiteMenu from "../components/SiteMenu.astro";
 import type { CollectionName } from "../lib/types";
 
@@ -74,14 +75,7 @@ const imageUrl = new URL("/og-image.png", Astro.site).href;
       <slot />
     </main>
 
-    <footer class="site-footer">
-      <p>
-        Site non officiel, gratuit, ni publié ni approuvé par Paizo. Pathfinder est une marque de Paizo Inc., traduite
-        en français par Black Book Éditions ; marques et images de Paizo utilisées selon sa
-        <a href="https://paizo.com/licenses/communityuse">Community Use Policy</a>.{" "}
-        <a href="/sources/">Sources et remerciements</a>
-      </p>
-    </footer>
+    <SiteFooter />
 
     <dialog class="search-dialog" aria-label="Recherche">
       <form method="dialog" class="search-close">
