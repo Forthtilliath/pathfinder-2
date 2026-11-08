@@ -271,8 +271,9 @@ export const COLLECTIONS: CollectionDef[] = [
     title: "Règles",
     noun: "règles",
     nav: true,
-    intro: "Le Livre des joueurs et le Livre du MJ page par page, et les aide-mémoire de l'écran du MJ.",
-    facets: [BOOK, { key: "chapter", label: "Chapitre" }],
+    intro: "Le Livre des joueurs et le Livre du MJ chapitre par chapitre, dans l'ordre des livres, et les aide-mémoire de l'écran du MJ.",
+    // No facets: the rules page is a table of contents (components/RulesIndex.astro).
+    facets: [],
   },
   {
     name: "traits",

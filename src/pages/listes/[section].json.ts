@@ -3,9 +3,9 @@ import { COLLECTIONS, VIEWS } from "../../lib/collections";
 import { listRows } from "../../lib/data";
 import type { CollectionName } from "../../lib/types";
 
-/** Full list of a collection or view, loaded by the list page after the first rows. */
+/** Full list of a collection or view, loaded by the list page after the first rows. The rules page is a table of contents (no list). */
 export const getStaticPaths: GetStaticPaths = () => [
-  ...COLLECTIONS.map((c) => ({ params: { section: c.path }, props: { base: c.name } })),
+  ...COLLECTIONS.filter((c) => c.name !== "rules").map((c) => ({ params: { section: c.path }, props: { base: c.name } })),
   ...VIEWS.map((v) => ({ params: { section: v.path }, props: { base: v.base, filter: v.filter } })),
 ];
 
