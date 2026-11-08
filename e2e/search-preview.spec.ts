@@ -16,7 +16,8 @@ test.describe("full-text search", () => {
 
   test("opens from the header button and closes with Escape", async ({ page }) => {
     await page.goto("/sorts/");
-    await page.getByRole("button", { name: /Rechercher/ }).click();
+    // The header button (the footer has its own "Rechercher" link).
+    await page.locator(".site-header").getByRole("button", { name: /Rechercher/ }).click();
     const dialog = page.getByRole("dialog", { name: "Recherche" });
     await expect(dialog).toBeVisible();
     await page.keyboard.press("Escape");
