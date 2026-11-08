@@ -1,0 +1,60 @@
+---
+/**
+ * Site footer: brand and figures, main sections, site pages, then the legal
+ * notice (Paizo Community Use Policy) with the data and build dates.
+ */
+import { COLLECTIONS } from "../lib/collections";
+import { meta, pageCount } from "../lib/data";
+
+const sections = COLLECTIONS.filter((c) => c.nav && pageCount(c.path) > 0).map((c) => ({ href: `/${c.path}/`, title: c.title }));
+const total = Object.values(meta.counts).reduce((a, b) => a + (b ?? 0), 0);
+const formatDate = (d: Date) => d.toLocaleDateString("fr-FR", { dateStyle: "long", timeZone: "Europe/Paris" });
+const dataDate = new Date(meta.date);
+const buildDate = new Date();
+---
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="/">PF2 <span>en français</span></a>
+      <p>Les règles de Pathfinder 2 remasterisé, en français, gratuites et sans publicité.</p>
+      <ul class="footer-facts">
+        <li><strong>{total.toLocaleString("fr-FR")}</strong> fiches de règles</li>
+        <li>
+          Données à jour au <time datetime={dataDate.toISOString()}>{formatDate(dataDate)}</time>
+        </li>
+      </ul>
+    </div>
+
+    <nav class="footer-col" aria-labelledby="footer-sections">
+      <p class="footer-title" id="footer-sections">Explorer</p>
+      <ul>
+        {sections.map((s) => <li><a href={s.href}>{s.title}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav class="footer-col" aria-labelledby="footer-site">
+      <p class="footer-title" id="footer-site">Le site</p>
+      <ul>
+        <li><a href="/">Accueil</a></li>
+        <li><button type="button" class="footer-link" data-open-search>Rechercher</button></li>
+        <li><a href="/sources/">Sources et remerciements</a></li>
+        <li><a href="/sources/#livres">Livres de base et licence ORC</a></li>
+        <li><a href="/sources/#images">Crédits des images</a></li>
+        <li><a href="/sources/#traductions-du-site">Traductions du site</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="footer-legal">
+    <p>
+      Site non officiel, ni publié ni approuvé par Paizo. Pathfinder est une marque de Paizo Inc., traduite en français
+      par Black Book Éditions ; marques et images de Paizo utilisées selon sa
+      <a href="https://paizo.com/licenses/communityuse">Community Use Policy</a>. Règles publiées sous licence ORC.
+    </p>
+    <p class="footer-meta">
+      <span>Mis à jour le <time datetime={buildDate.toISOString()}>{formatDate(buildDate)}</time></span>
+      <a href="#" class="footer-top">Haut de page ↑</a>
+    </p>
+  </div>
+</footer>
