@@ -271,8 +271,8 @@ export const COLLECTIONS: CollectionDef[] = [
     title: "Règles",
     noun: "règles",
     nav: true,
-    intro: "Les chapitres de règles du jeu et les aide-mémoire de l'écran du MJ.",
-    facets: [{ key: "book", label: "Livre" }],
+    intro: "Le Livre des joueurs et le Livre du MJ page par page, et les aide-mémoire de l'écran du MJ.",
+    facets: [BOOK, { key: "chapter", label: "Chapitre" }],
   },
   {
     name: "traits",
