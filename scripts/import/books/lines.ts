@@ -37,6 +37,9 @@ const BOTTOM_FURNITURE = 28;
 
 const isBlank = (r: { t: string }) => !r.t.trim();
 
+/** A word set letter-spaced to fill a justified line ("a c c e s s i b l e s"): its letters joined again. */
+export const unspaced = (t: string) => (/^\s*(?:\p{L} ){2,}\p{L}\s*$/u.test(t) ? t.replace(/(?<=\p{L}) (?=\p{L})/gu, "") : t);
+
 /** Running heads and page numbers (top and bottom margins), chapter tabs (outer edge, condensed bold). */
 export function isFurniture(f: Fragment): boolean {
   if (f.y > TOP_FURNITURE || f.y < BOTTOM_FURNITURE) return true;
@@ -95,9 +98,14 @@ export function pageLines(page: number, fragments: Fragment[]): Line[] {
     if (line) lines.push(line);
     runs = [];
   };
+  // Text drawn twice at the same place (outlined labels, shadowed sidebars): read once.
+  const drawn = new Set<string>();
   for (const f of fragments) {
     if (isFurniture(f)) continue;
-    const run: Run = { t: f.t, f: f.f, s: f.s, x: f.x, y: f.y, w: f.w };
+    const key = `${f.t}|${f.x}|${f.y}|${f.s}|${f.f}`;
+    if (drawn.has(key)) continue;
+    drawn.add(key);
+    const run: Run = { t: unspaced(f.t), f: f.f, s: f.s, x: f.x, y: f.y, w: f.w };
     const sameLine = runs.length > 0 && Math.abs(f.y - y) < 1.5 && f.x >= end - 3;
     // A jump over the gutter between two text columns starts a new line, not a new cell.
     const crossesGutter = sameLine && end < PAGE_WIDTH / 2 - 5 && f.x > PAGE_WIDTH / 2 + 5 && /Sabon/.test(f.f) && f.x - end > 20;

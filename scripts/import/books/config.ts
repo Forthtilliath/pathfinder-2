@@ -20,6 +20,17 @@ export type SectionRule =
   | { title: RegExp; action: "page"; until?: Until }
   | { title: RegExp; action: "describe"; collection: CollectionName; until?: Until };
 
+/**
+ * A map or a diagram: its labels are text in the PDF, not content. Without a
+ * font, the whole PDF page is dropped; otherwise only the labels set in that
+ * font (and one of those sizes).
+ */
+export interface Figure {
+  page: number;
+  font?: RegExp;
+  sizes?: number[];
+}
+
 export interface BookSpec {
   /** PDF file name, in .cache/pdf/. */
   file: string;
@@ -33,6 +44,7 @@ export interface BookSpec {
   /** PDF page = printed page + offset (cover and inlay). */
   pageOffset: number;
   rules: SectionRule[];
+  figures: Figure[];
 }
 
 const skip = (title: RegExp): SectionRule => ({ title, action: "skip" });
@@ -54,6 +66,8 @@ export const BOOKS: BookSpec[] = [
       until(/^(Historiques|Archétypes|Rituels|Sorts focalisés)$/, "stat"),
       skip(/^(Tables des dons|Dons|Chapitre 5 : Dons|Listes de sorts|Sorts|Annexe des États|Intensités d’états|Glossaire et index|Livre des Joueurs)$/),
     ],
+    // Map of the Inner Sea region (printed page 30).
+    figures: [{ page: 32 }],
   },
   {
     file: "pathfinder-2e-remaster-livre-du-mj.pdf",
@@ -65,6 +79,12 @@ export const BOOKS: BookSpec[] = [
     rules: [
       until(/^(Dangers|Alchimie|Magie momentanée|Attributs de pouvoir|Artefacts|Armes et armures)$/, "stat"),
       skip(/^(Glossaire et index|Livre du MJ|Chapitre 5 :)$/),
+    ],
+    figures: [
+      // Map of the Inner Sea region, map of Golarion's continents, diagram of the planes.
+      { page: 144 },
+      { page: 146, font: /^Taroca$/, sizes: [14] },
+      { page: 176, font: /^GoodOT-Bold$/, sizes: [10, 11] },
     ],
   },
 ];

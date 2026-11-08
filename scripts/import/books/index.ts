@@ -9,7 +9,7 @@ import type { CollectionName, Provenance } from "../../../src/lib/types.ts";
 import { ROOT } from "../config.ts";
 import { extraDoc, simpleAdapter, type ExtraSource } from "../extra-sources.ts";
 import { BOOKS, ruleFor, type BookSpec } from "./config.ts";
-import { PERSONAL_DATA, readBookText } from "./pdf-text.ts";
+import { PERSONAL_DATA, readBookText, withoutFigures } from "./pdf-text.ts";
 import { cutBlocks, prepareBook } from "./sections.ts";
 
 export const PDF_DIR = path.join(ROOT, ".cache/pdf");
@@ -75,7 +75,7 @@ export async function readBooks(warn: (message: string) => void): Promise<BookCo
       warn(`book PDF not found, its pages are skipped: ${spec.file}`);
       continue;
     }
-    const book = prepareBook(await readBookText(file));
+    const book = prepareBook(withoutFigures(await readBookText(file), spec.figures));
     out.publications.add(spec.publication);
     const list: Owners = [];
     let n = 0;
